@@ -1,0 +1,1707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>McSwegin Studio · Creative Assistant</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest" defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        cream: '#F7F3EC',
+        'cream-dark': '#EDE5D4',
+        'warm-white': '#FDFAF6',
+        sage: '#A8BAA3',
+        'sage-light': '#C8D9C3',
+        'sage-dark': '#6E9467',
+        'dusty-rose': '#C9A096',
+        'dusty-rose-light': '#E4C9C2',
+        sand: '#C4AA87',
+        'sand-light': '#DDD0BC',
+        'blue-gray': '#8FA3B1',
+        charcoal: '#3A3330',
+        'charcoal-light': '#6E6560',
+        gold: '#C4A050',
+      },
+      fontFamily: {
+        heading: ['Cormorant Garamond', 'serif'],
+        body: ['Jost', 'sans-serif'],
+      }
+    }
+  }
+}
+</script>
+<style>
+:root {
+  --cream: #F7F3EC;
+  --cream-dark: #EDE5D4;
+  --warm-white: #FDFAF6;
+  --sage: #A8BAA3;
+  --sage-light: #C8D9C3;
+  --sage-dark: #6E9467;
+  --dusty-rose: #C9A096;
+  --dusty-rose-light: #E4C9C2;
+  --sand: #C4AA87;
+  --sand-light: #DDD0BC;
+  --blue-gray: #8FA3B1;
+  --charcoal: #3A3330;
+  --charcoal-light: #6E6560;
+  --gold: #C4A050;
+}
+* { box-sizing: border-box; }
+body {
+  font-family: 'Jost', sans-serif;
+  background: var(--cream);
+  color: var(--charcoal);
+  margin: 0;
+  position: relative;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+h1, h2, h3, h4, h5 { font-family: 'Cormorant Garamond', serif; }
+.sidebar-nav-item {
+  display: flex; align-items: center; gap: 10px; padding: 10px 16px;
+  border-radius: 8px; cursor: pointer; transition: all 0.2s ease;
+  font-size: 14px; color: var(--charcoal-light); text-decoration: none;
+  position: relative;
+}
+.sidebar-nav-item:hover, .sidebar-nav-item.active {
+  background: var(--sage-light); color: var(--charcoal);
+}
+.sidebar-nav-item.active { font-weight: 500; border-left: 3px solid var(--sage-dark); }
+.content-section { display: none; animation: fadeIn 0.3s ease; }
+.content-section.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+.fade-in-up { animation: fadeInUp 0.4s ease forwards; }
+.card-hover { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.card-hover:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(58,51,48,0.08); }
+.category-pill {
+  display: inline-flex; align-items: center; gap: 4px; padding: 6px 14px;
+  border-radius: 20px; font-size: 13px; cursor: pointer;
+  transition: all 0.2s ease; border: 1px solid var(--sand-light);
+  background: var(--warm-white); color: var(--charcoal);
+}
+.category-pill.active-pill { background: var(--sage); color: white; border-color: var(--sage); }
+.category-pill:hover { background: var(--sage-light); border-color: var(--sage); }
+.btn-primary {
+  background: var(--sage); color: white; border: none; padding: 10px 20px;
+  border-radius: 8px; font-family: 'Jost', sans-serif; font-weight: 500;
+  cursor: pointer; transition: all 0.2s ease; font-size: 14px;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-primary:hover { background: var(--sage-dark); }
+.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+.btn-secondary {
+  background: transparent; color: var(--sage-dark); border: 1px solid var(--sage);
+  padding: 8px 16px; border-radius: 8px; font-family: 'Jost', sans-serif;
+  font-weight: 400; cursor: pointer; transition: all 0.2s ease; font-size: 13px;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-secondary:hover { background: var(--sage-light); }
+.btn-rose {
+  background: var(--dusty-rose); color: white; border: none; padding: 8px 16px;
+  border-radius: 8px; font-family: 'Jost', sans-serif; cursor: pointer;
+  transition: all 0.2s ease; font-size: 13px;
+}
+.btn-rose:hover { background: #b8877d; }
+.form-input {
+  width: 100%; padding: 10px 14px; border: 1px solid var(--sand-light);
+  border-radius: 8px; font-family: 'Jost', sans-serif; font-size: 14px;
+  background: var(--warm-white); color: var(--charcoal); transition: border 0.2s ease;
+  outline: none;
+}
+.form-input:focus { border-color: var(--sage); box-shadow: 0 0 0 3px rgba(168,186,163,0.2); }
+.form-label { font-size: 13px; font-weight: 500; color: var(--charcoal-light); margin-bottom: 4px; display: block; letter-spacing: 0.02em; }
+.badge {
+  display: inline-flex; align-items: center; padding: 2px 10px;
+  border-radius: 12px; font-size: 11px; font-weight: 500;
+}
+.insp-card {
+  background: var(--warm-white); border-radius: 12px; padding: 24px;
+  border-left: 4px solid var(--sage); box-shadow: 0 2px 12px rgba(58,51,48,0.04);
+}
+.color-swatch {
+  width: 20px; height: 20px; border-radius: 50%; display: inline-block;
+  border: 1px solid rgba(58,51,48,0.1);
+}
+.product-badge {
+  display: inline-block; padding: 3px 10px; border-radius: 12px;
+  font-size: 11px; background: var(--cream-dark); color: var(--charcoal-light);
+  margin: 2px;
+}
+.toast-notification {
+  position: fixed; bottom: 24px; right: 24px; padding: 12px 20px;
+  background: var(--charcoal); color: white; border-radius: 10px;
+  font-size: 14px; z-index: 10000; opacity: 0; transform: translateY(10px);
+  transition: all 0.3s ease; pointer-events: none;
+}
+.toast-notification.show { opacity: 1; transform: translateY(0); }
+.spinner {
+  display: inline-block; width: 20px; height: 20px;
+  border: 2px solid var(--sage-light); border-top-color: var(--sage-dark);
+  border-radius: 50%; animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.botanical-spinner {
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  padding: 32px; color: var(--charcoal-light); font-size: 14px;
+}
+select.form-input { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236E6560' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px; }
+.mobile-tab-bar { display: none; }
+@media (max-width: 767px) {
+  .desktop-sidebar { display: none !important; }
+  .mobile-tab-bar {
+    display: flex; position: fixed; bottom: 0; left: 0; right: 0;
+    background: var(--warm-white); border-top: 1px solid var(--sand-light);
+    z-index: 1000; padding: 4px 0; padding-bottom: max(4px, env(safe-area-inset-bottom));
+  }
+  .mobile-tab {
+    flex: 1; display: flex; flex-direction: column; align-items: center;
+    padding: 6px 2px; font-size: 10px; color: var(--charcoal-light);
+    cursor: pointer; text-decoration: none; border: none; background: none;
+    gap: 2px; position: relative;
+  }
+  .mobile-tab.active { color: var(--sage-dark); }
+  .main-content { margin-left: 0 !important; padding-bottom: 80px !important; }
+}
+.checklist-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; font-size: 14px; }
+.checklist-item input[type="checkbox"] { accent-color: var(--sage-dark); width: 16px; height: 16px; }
+.tag-input-container { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px; border: 1px solid var(--sand-light); border-radius: 8px; background: var(--warm-white); min-height: 42px; align-items: center; }
+.tag-chip { display: inline-flex; align-items: center; gap: 4px; padding: 2px 10px; background: var(--sage-light); color: var(--charcoal); border-radius: 12px; font-size: 12px; }
+.tag-chip button { background: none; border: none; cursor: pointer; font-size: 14px; color: var(--charcoal-light); padding: 0; line-height: 1; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+.product-type-card {
+  background: var(--warm-white); border: 2px solid transparent; border-radius: 12px;
+  padding: 16px; cursor: pointer; transition: all 0.2s ease; text-align: center;
+}
+.product-type-card:hover { border-color: var(--sage-light); transform: translateY(-2px); }
+.product-type-card.selected { border-color: var(--sage); background: var(--cream-dark); }
+.hashtag-chip {
+  display: inline-block; padding: 3px 10px; background: var(--cream-dark);
+  border-radius: 12px; font-size: 12px; color: var(--charcoal); cursor: pointer;
+  transition: background 0.2s ease; margin: 2px;
+}
+.hashtag-chip:hover { background: var(--sage-light); }
+.template-card {
+  background: var(--warm-white); border-radius: 12px; padding: 20px;
+  border: 1px solid var(--sand-light); cursor: pointer; transition: all 0.2s ease;
+}
+.template-card:hover { border-color: var(--sage); transform: translateY(-1px); }
+.gen-output { background: var(--warm-white); border-radius: 12px; padding: 24px; border: 1px solid var(--sand-light); }
+.gen-section { margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--cream-dark); }
+.gen-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.tone-slider { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; border-radius: 3px; background: linear-gradient(to right, var(--blue-gray), var(--dusty-rose), var(--gold)); outline: none; }
+.tone-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; border-radius: 50%; background: white; border: 2px solid var(--sage); cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.15); }
+
+/* Generated output styles */
+.generated-output { margin-top: 24px; }
+.output-block { background: var(--warm-white); border: 1px solid var(--sand-light); border-radius: 10px; padding: 20px; margin-bottom: 16px; animation: fadeInUp 0.4s ease; }
+.output-label { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-weight: 600; color: var(--sage-dark); margin-bottom: 10px; letter-spacing: 0.03em; }
+.copy-btn { background: var(--cream-dark); border: 1px solid var(--sand-light); border-radius: 6px; padding: 6px 14px; font-family: 'Jost', sans-serif; font-size: 12px; cursor: pointer; transition: all 0.2s; color: var(--charcoal-light); }
+.copy-btn:hover { background: var(--sage-light); color: var(--charcoal); }
+.gen-tag { display: inline-block; background: var(--cream-dark); border: 1px solid var(--sand-light); border-radius: 20px; padding: 4px 12px; font-size: 12px; margin: 3px; cursor: pointer; transition: background 0.2s; }
+.gen-tag:hover { background: var(--sage-light); }
+.gen-tag-row { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+.output-block pre { margin: 0; font-size: 14px; line-height: 1.7; }
+@keyframes loadingPulse { 0%,100%{opacity:0.4;} 50%{opacity:1;} }
+.loading-pulse { animation: loadingPulse 1s ease-in-out infinite; }
+</style>
+</head>
+<body data-id="0" class="min-h-screen">
+<app-icon data-id="1" hidden data-icon="palette" data-palette="Earth"></app-icon>
+
+<!-- Toast -->
+<div data-id="2" id="toast-notif-ms01" class="toast-notification"></div>
+
+<!-- Desktop Sidebar -->
+<aside data-id="3" id="sidebar-ms01" class="desktop-sidebar fixed left-0 top-0 bottom-0 w-60 bg-warm-white border-r border-sand-light flex flex-col z-50" style="box-shadow: 2px 0 16px rgba(58,51,48,0.04);">
+  <div data-id="4" class="p-6 pb-4 border-b border-sand-light">
+    <div data-id="5" class="flex items-center gap-3 mb-1">
+      <div data-id="6" class="w-11 h-11 rounded-full bg-sage flex items-center justify-center">
+        <span data-id="7" class="font-heading text-white text-xl font-semibold" style="line-height:1;">M·S</span>
+      </div>
+      <div data-id="8">
+        <div data-id="9" class="font-heading text-lg font-semibold text-charcoal" style="line-height:1.2;">McSwegin</div>
+        <div data-id="10" class="font-heading text-sm text-charcoal-light italic" style="line-height:1.2;">Studio</div>
+      </div>
+    </div>
+    <div data-id="11" class="text-xs text-charcoal-light mt-2 tracking-widest uppercase">Creative Assistant</div>
+  </div>
+  <nav data-id="12" class="flex-1 p-3 space-y-1 overflow-y-auto" id="sidebar-nav-ms01">
+    <a data-id="13" class="sidebar-nav-item active" data-section="dashboard"><i data-id="14" data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard</a>
+    <a data-id="15" class="sidebar-nav-item" data-section="inspiration"><i data-id="16" data-lucide="sparkles" class="w-4 h-4"></i> Inspiration Bank <span data-id="17" id="saved-badge-ms01" class="badge bg-dusty-rose text-white ml-auto" style="display:none;">0</span></a>
+    <a data-id="18" class="sidebar-nav-item" data-section="collection"><i data-id="19" data-lucide="layers" class="w-4 h-4"></i> Collection Planner</a>
+    <a data-id="20" class="sidebar-nav-item" data-section="pattern"><i data-id="21" data-lucide="palette" class="w-4 h-4"></i> Pattern Studio</a>
+    <a data-id="22" class="sidebar-nav-item" data-section="product"><i data-id="23" data-lucide="package" class="w-4 h-4"></i> Product Builder</a>
+    <a data-id="24" class="sidebar-nav-item" data-section="etsy"><i data-id="25" data-lucide="shopping-bag" class="w-4 h-4"></i> Etsy Generator</a>
+    <a data-id="26" class="sidebar-nav-item" data-section="social"><i data-id="27" data-lucide="smartphone" class="w-4 h-4"></i> Social Studio</a>
+  </nav>
+  <div data-id="28" class="p-4 relative overflow-hidden" style="min-height:120px;">
+    <svg data-id="29" class="absolute bottom-0 left-0 w-full opacity-10" viewBox="0 0 200 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path data-id="30" d="M100 130 C100 130 95 110 90 95 C85 80 75 70 70 60 C65 50 68 35 80 30 C92 25 100 40 100 40 C100 40 108 25 120 30 C132 35 135 50 130 60 C125 70 115 80 110 95 C105 110 100 130 100 130Z" stroke="#A8BAA3" stroke-width="1" fill="none"/>
+      <path data-id="31" d="M80 95 C70 85 55 80 45 85 C35 90 35 100 45 105" stroke="#A8BAA3" stroke-width="0.8" fill="none"/>
+      <path data-id="32" d="M120 95 C130 85 145 80 155 85 C165 90 165 100 155 105" stroke="#A8BAA3" stroke-width="0.8" fill="none"/>
+      <path data-id="33" d="M90 70 C80 60 65 58 55 65" stroke="#A8BAA3" stroke-width="0.6" fill="none"/>
+      <path data-id="34" d="M110 70 C120 60 135 58 145 65" stroke="#A8BAA3" stroke-width="0.6" fill="none"/>
+      <path data-id="35" d="M95 50 C88 40 78 38 70 42" stroke="#A8BAA3" stroke-width="0.5" fill="none"/>
+      <path data-id="36" d="M105 50 C112 40 122 38 130 42" stroke="#A8BAA3" stroke-width="0.5" fill="none"/>
+    </svg>
+  </div>
+</aside>
+
+<!-- Mobile Tab Bar -->
+<nav data-id="37" class="mobile-tab-bar" id="mobile-tabs-ms01">
+  <button data-id="38" class="mobile-tab active" data-section="dashboard"><i data-id="39" data-lucide="layout-dashboard" class="w-5 h-5"></i><span data-id="40">Home</span></button>
+  <button data-id="41" class="mobile-tab" data-section="inspiration"><i data-id="42" data-lucide="sparkles" class="w-5 h-5"></i><span data-id="43">Inspire</span></button>
+  <button data-id="44" class="mobile-tab" data-section="collection"><i data-id="45" data-lucide="layers" class="w-5 h-5"></i><span data-id="46">Collect</span></button>
+  <button data-id="47" class="mobile-tab" data-section="pattern"><i data-id="48" data-lucide="palette" class="w-5 h-5"></i><span data-id="49">Pattern</span></button>
+  <button data-id="50" class="mobile-tab" data-section="product"><i data-id="51" data-lucide="package" class="w-5 h-5"></i><span data-id="52">Product</span></button>
+  <button data-id="53" class="mobile-tab" data-section="etsy"><i data-id="54" data-lucide="shopping-bag" class="w-5 h-5"></i><span data-id="55">Etsy</span></button>
+  <button data-id="56" class="mobile-tab" data-section="social"><i data-id="57" data-lucide="smartphone" class="w-5 h-5"></i><span data-id="58">Social</span></button>
+</nav>
+
+<!-- Main Content -->
+<main data-id="59" id="main-content-ms01" class="main-content md:ml-60 min-h-screen">
+
+<!-- ===== SECTION 1: DASHBOARD ===== -->
+<section data-id="60" id="section-dashboard" class="content-section active p-4 md:p-8 max-w-6xl mx-auto">
+  <div data-id="61" class="mb-8">
+    <h1 data-id="62" id="greeting-h1-ms01" class="font-heading text-2xl md:text-4xl font-semibold text-charcoal mb-1"></h1>
+    <p data-id="63" class="text-xs tracking-widest uppercase text-charcoal-light">McSwegin Studio · Creative Assistant</p>
+  </div>
+
+  <!-- Stats -->
+  <div data-id="64" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+    <div data-id="65" class="bg-warm-white rounded-xl p-5 card-hover border border-sand-light/50">
+      <div data-id="66" class="flex items-center gap-2 mb-2 text-charcoal-light text-xs uppercase tracking-wider"><i data-id="67" data-lucide="layers" class="w-4 h-4 text-sage"></i> Active Collections</div>
+      <div data-id="68" class="text-3xl font-heading font-semibold text-charcoal">3</div>
+    </div>
+    <div data-id="69" class="bg-warm-white rounded-xl p-5 card-hover border border-sand-light/50">
+      <div data-id="70" class="flex items-center gap-2 mb-2 text-charcoal-light text-xs uppercase tracking-wider"><i data-id="71" data-lucide="palette" class="w-4 h-4 text-dusty-rose"></i> Patterns in Studio</div>
+      <div data-id="72" class="text-3xl font-heading font-semibold text-charcoal">12</div>
+    </div>
+    <div data-id="73" class="bg-warm-white rounded-xl p-5 card-hover border border-sand-light/50">
+      <div data-id="74" class="flex items-center gap-2 mb-2 text-charcoal-light text-xs uppercase tracking-wider"><i data-id="75" data-lucide="shopping-bag" class="w-4 h-4 text-blue-gray"></i> Listings Ready</div>
+      <div data-id="76" class="text-3xl font-heading font-semibold text-charcoal">7</div>
+    </div>
+    <div data-id="77" class="bg-warm-white rounded-xl p-5 card-hover border border-sand-light/50">
+      <div data-id="78" class="flex items-center gap-2 mb-2 text-charcoal-light text-xs uppercase tracking-wider"><i data-id="79" data-lucide="bookmark" class="w-4 h-4 text-gold"></i> Ideas Saved</div>
+      <div data-id="80" class="text-3xl font-heading font-semibold text-charcoal" id="ideas-saved-count-ms01">0</div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div data-id="81" class="flex flex-wrap gap-3 mb-8">
+    <button data-id="82" class="btn-primary" id="qa-collection-ms01"><i data-id="83" data-lucide="plus" class="w-4 h-4"></i> Start a New Collection</button>
+    <button data-id="84" class="btn-primary" id="qa-pattern-ms01" style="background:var(--dusty-rose);"><i data-id="85" data-lucide="wand-2" class="w-4 h-4"></i> Generate Pattern Prompts</button>
+    <button data-id="86" class="btn-primary" id="qa-etsy-ms01" style="background:var(--blue-gray);"><i data-id="87" data-lucide="pen-line" class="w-4 h-4"></i> Write an Etsy Listing</button>
+  </div>
+
+  <!-- Today's Inspiration -->
+  <div data-id="88" class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <div data-id="89" class="bg-warm-white rounded-xl p-6 border border-sand-light/50">
+      <div data-id="90" class="flex items-center justify-between mb-4">
+        <h3 data-id="91" class="font-heading text-xl font-semibold">Today's Inspiration</h3>
+        <button data-id="92" class="btn-secondary text-xs" id="refresh-inspo-ms01"><i data-id="93" data-lucide="refresh-cw" class="w-3 h-3"></i> Refresh</button>
+      </div>
+      <div data-id="94" id="todays-inspo-ms01"></div>
+    </div>
+
+    <!-- Brand Style Guide -->
+    <div data-id="95" class="bg-warm-white rounded-xl p-6 border border-sand-light/50">
+      <h3 data-id="96" class="font-heading text-xl font-semibold mb-4">Brand Style Guide</h3>
+      <div data-id="97" class="flex flex-wrap gap-2 mb-4" id="palette-swatches-ms01"></div>
+      <div data-id="98" class="mb-3">
+        <p data-id="99" class="font-heading text-lg font-semibold text-charcoal mb-0">Cormorant Garamond</p>
+        <p data-id="100" class="text-sm text-charcoal-light">Heading · Elegant Serif</p>
+      </div>
+      <div data-id="101" class="mb-4">
+        <p data-id="102" class="text-sm font-medium">Jost · Body · Modern Clean</p>
+        <p data-id="103" class="text-xs text-charcoal-light">The quick brown fox jumps over the lazy dog.</p>
+      </div>
+      <div data-id="104" class="flex flex-wrap gap-1 mb-3">
+        <span data-id="105" class="product-badge">Soft Coastal</span><span data-id="106" class="product-badge">Cottagecore</span><span data-id="107" class="product-badge">Faith-Inspired</span><span data-id="108" class="product-badge">Peaceful</span><span data-id="109" class="product-badge">Minimal</span><span data-id="110" class="product-badge">Hand-Drawn Line Art</span><span data-id="111" class="product-badge">Neutral Earthy</span><span data-id="112" class="product-badge">Elegant Boutique</span>
+      </div>
+      <p data-id="113" class="text-xs text-charcoal-light italic">Design signatures: fine line drawings · botanical borders · scripture whispers · organic textures · quiet negative space</p>
+    </div>
+  </div>
+
+  <!-- Category Chips -->
+  <div data-id="114" class="mb-4">
+    <h3 data-id="115" class="font-heading text-xl font-semibold mb-3">Inspiration Categories</h3>
+    <div data-id="116" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-2" id="dash-category-chips-ms01"></div>
+  </div>
+
+  <!-- Divider -->
+  <div data-id="117" class="flex items-center gap-4 my-8 opacity-30">
+    <div data-id="118" class="flex-1 h-px bg-sage"></div>
+    <svg data-id="119" width="24" height="12" viewBox="0 0 24 12" fill="none"><path data-id="120" d="M2 10 C6 2 10 6 12 6 C14 6 18 2 22 10" stroke="#A8BAA3" stroke-width="1"/></svg>
+    <div data-id="121" class="flex-1 h-px bg-sage"></div>
+  </div>
+</section>
+
+<!-- ===== SECTION 2: INSPIRATION BANK ===== -->
+<section data-id="122" id="section-inspiration" class="content-section p-4 md:p-8 max-w-6xl mx-auto">
+  <div data-id="123" class="mb-6">
+    <h1 data-id="124" class="font-heading text-2xl md:text-3xl font-semibold">Inspiration Bank</h1>
+    <p data-id="125" class="text-charcoal-light text-sm italic">Draw from what moves your soul.</p>
+  </div>
+  <div data-id="126" class="flex flex-wrap gap-2 mb-6" id="filter-pills-ms01"></div>
+  <div data-id="127" class="grid grid-cols-1 md:grid-cols-2 gap-6" id="inspo-cards-ms01"></div>
+</section>
+
+<!-- ===== SECTION 3: COLLECTION PLANNER ===== -->
+<section data-id="128" id="section-collection" class="content-section p-4 md:p-8 max-w-6xl mx-auto">
+  <div data-id="129" class="mb-6">
+    <h1 data-id="130" class="font-heading text-2xl md:text-3xl font-semibold">Collection Planner</h1>
+    <p data-id="131" class="text-charcoal-light text-sm italic">Design your next cohesive collection from start to finish.</p>
+  </div>
+  <div data-id="132" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div data-id="133" class="lg:col-span-2">
+      <div data-id="134" class="bg-warm-white rounded-xl p-6 border border-sand-light/50 mb-6">
+        <h3 data-id="135" class="font-heading text-lg font-semibold mb-4">Collection Template Builder</h3>
+        <div data-id="136" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div data-id="137"><label data-id="138" class="form-label">Collection Name</label><input data-id="139" type="text" id="coll-name-ms01" class="form-input" placeholder="e.g., Coastal Morning"></div>
+          <div data-id="140"><label data-id="141" class="form-label">Primary Inspiration</label><select data-id="142" id="coll-primary-ms01" class="form-input"><option data-id="143" value="">Select category...</option></select></div>
+          <div data-id="144"><label data-id="145" class="form-label">Secondary Theme (optional)</label><input data-id="146" type="text" id="coll-secondary-ms01" class="form-input" placeholder="e.g., Golden hour warmth"></div>
+          <div data-id="147"><label data-id="148" class="form-label">Season / Launch Timing</label><select data-id="149" id="coll-season-ms01" class="form-input"><option data-id="150" value="Spring">Spring</option><option data-id="151" value="Summer">Summer</option><option data-id="152" value="Autumn">Autumn</option><option data-id="153" value="Winter">Winter</option><option data-id="154" value="Evergreen">Evergreen</option></select></div>
+        </div>
+        <div data-id="155" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          <div data-id="156"><label data-id="157" class="form-label">Color 1 Hex</label><input data-id="158" type="text" id="coll-c1-ms01" class="form-input" placeholder="#A8BAA3"></div>
+          <div data-id="159"><label data-id="160" class="form-label">Color 2 Hex</label><input data-id="161" type="text" id="coll-c2-ms01" class="form-input" placeholder="#C9A096"></div>
+          <div data-id="162"><label data-id="163" class="form-label">Color 3 Hex</label><input data-id="164" type="text" id="coll-c3-ms01" class="form-input" placeholder="#F7F3EC"></div>
+        </div>
+        <div data-id="165" class="mb-4">
+          <label data-id="166" class="form-label">Mood Words (press Enter to add, up to 5)</label>
+          <div data-id="167" class="tag-input-container" id="mood-tags-container-ms01"><input data-id="168" type="text" class="border-none outline-none bg-transparent text-sm flex-1 min-w-[100px]" id="mood-tag-input-ms01" placeholder="Type a mood word..."></div>
+        </div>
+        <div data-id="169" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div data-id="170"><label data-id="171" class="form-label">Number of Patterns Planned</label><input data-id="172" type="number" id="coll-patterns-ms01" class="form-input" value="6" min="1" max="12"></div>
+        </div>
+        <div data-id="173" class="mb-4">
+          <label data-id="174" class="form-label">Product Types Included</label>
+          <div data-id="175" class="flex flex-wrap gap-2 mt-1" id="coll-products-ms01"></div>
+        </div>
+        <button data-id="176" class="btn-primary w-full justify-center" id="gen-collection-ms01"><i data-id="177" data-lucide="wand-2" class="w-4 h-4"></i> Generate Collection Template</button>
+      </div>
+      <div data-id="178" id="coll-output-ms01" class="mb-6"></div>
+    </div>
+    <div data-id="179">
+      <h3 data-id="180" class="font-heading text-lg font-semibold mb-3">Saved Collections</h3>
+      <div data-id="181" class="space-y-3" id="saved-collections-ms01"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 4: PATTERN STUDIO ===== -->
+<section data-id="182" id="section-pattern" class="content-section p-4 md:p-8 max-w-6xl mx-auto">
+  <div data-id="183" class="mb-6">
+    <h1 data-id="184" class="font-heading text-2xl md:text-3xl font-semibold">Pattern Studio</h1>
+    <p data-id="185" class="text-charcoal-light text-sm italic">Turn inspiration into AI-ready art prompts.</p>
+  </div>
+  <div data-id="186" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div data-id="187" class="lg:col-span-2">
+      <div data-id="188" class="bg-warm-white rounded-xl p-6 border border-sand-light/50 mb-6">
+        <h3 data-id="189" class="font-heading text-lg font-semibold mb-4">Prompt Builder</h3>
+        <div data-id="190" class="mb-5">
+          <label data-id="191" class="form-label mb-2">Step 1 · Choose Inspiration Category</label>
+          <div data-id="192" class="flex flex-wrap gap-2" id="pat-categories-ms01"></div>
+        </div>
+        <div data-id="193" class="mb-5">
+          <label data-id="194" class="form-label mb-2">Step 2 · Pattern Type</label>
+          <div data-id="195" class="flex flex-wrap gap-2" id="pat-types-ms01"></div>
+        </div>
+        <div data-id="196" class="mb-5">
+          <label data-id="197" class="form-label mb-2">Step 3 · Color Palette</label>
+          <div data-id="198" class="flex flex-wrap gap-2" id="pat-palettes-ms01"></div>
+        </div>
+        <div data-id="199" class="mb-5">
+          <label data-id="200" class="form-label mb-2">Step 4 · Style Elements (select multiple)</label>
+          <div data-id="201" class="flex flex-wrap gap-2" id="pat-styles-ms01"></div>
+        </div>
+        <div data-id="202" class="mb-5">
+          <label data-id="203" class="form-label">Step 5 · Rendering Style</label>
+          <select data-id="204" id="pat-render-ms01" class="form-input mt-1"><option data-id="205" value="Procreate illustration">Procreate illustration</option><option data-id="206" value="Midjourney prompt">Midjourney prompt</option><option data-id="207" value="Adobe Fresco">Adobe Fresco</option><option data-id="208" value="DALL·E prompt">DALL·E prompt</option><option data-id="209" value="Canva AI">Canva AI</option><option data-id="210" value="Pen & paper sketch guide">Pen & paper sketch guide</option></select>
+        </div>
+        <button data-id="211" class="btn-primary w-full justify-center" id="gen-pattern-ms01"><i data-id="212" data-lucide="wand-2" class="w-4 h-4"></i> Generate Pattern Prompt</button>
+      </div>
+      <div data-id="213" id="pat-output-ms01" class="mb-6"></div>
+    </div>
+    <div data-id="214">
+      <h3 data-id="215" class="font-heading text-lg font-semibold mb-3">Prompt History</h3>
+      <div data-id="216" class="space-y-3" id="prompt-history-ms01"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 5: PRODUCT BUILDER ===== -->
+<section data-id="217" id="section-product" class="content-section p-4 md:p-8 max-w-6xl mx-auto">
+  <div data-id="218" class="mb-6">
+    <h1 data-id="219" class="font-heading text-2xl md:text-3xl font-semibold">Product Builder</h1>
+    <p data-id="220" class="text-charcoal-light text-sm italic">Map your patterns to beautiful products.</p>
+  </div>
+  <div data-id="221" class="mb-6">
+    <label data-id="222" class="form-label">Pattern Selection</label>
+    <input data-id="223" type="text" id="prod-pattern-ms01" class="form-input" placeholder="Enter pattern name or select from history...">
+  </div>
+  <div data-id="224" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-6" id="product-grid-ms01"></div>
+  <div data-id="225" id="prod-spec-ms01" class="mb-6"></div>
+  <div data-id="226" id="prod-output-ms01" class="mb-6"></div>
+  <div data-id="227" id="prod-checklist-ms01"></div>
+</section>
+
+<!-- ===== SECTION 6: ETSY GENERATOR ===== -->
+<section data-id="228" id="section-etsy" class="content-section p-4 md:p-8 max-w-6xl mx-auto">
+  <div data-id="229" class="mb-6">
+    <h1 data-id="230" class="font-heading text-2xl md:text-3xl font-semibold">Etsy Listing Generator</h1>
+    <p data-id="231" class="text-charcoal-light text-sm italic">Write listings that speak to your ideal customer's heart.</p>
+  </div>
+  <div data-id="232" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div data-id="233" class="lg:col-span-2">
+      <div data-id="234" class="bg-warm-white rounded-xl p-6 border border-sand-light/50 mb-6">
+        <div data-id="235" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div data-id="236"><label data-id="237" class="form-label">Product Name / Pattern</label><input data-id="238" type="text" id="etsy-name-ms01" class="form-input" placeholder="e.g., Coastal Shell Toss Tote Bag"></div>
+          <div data-id="239"><label data-id="240" class="form-label">Product Type</label><select data-id="241" id="etsy-type-ms01" class="form-input"></select></div>
+          <div data-id="242"><label data-id="243" class="form-label">Primary Inspiration</label><select data-id="244" id="etsy-inspo-ms01" class="form-input"><option data-id="245" value="">Select...</option></select></div>
+          <div data-id="246"><label data-id="247" class="form-label">Price ($)</label><input data-id="248" type="number" id="etsy-price-ms01" class="form-input" placeholder="24.99"></div>
+        </div>
+        <div data-id="249" class="mb-4"><label data-id="250" class="form-label">Key Features (3-5 bullets, one per line)</label><textarea data-id="251" id="etsy-features-ms01" class="form-input" rows="3" placeholder="Canvas tote with interior pocket&#10;Original hand-drawn pattern&#10;Machine washable"></textarea></div>
+        <div data-id="252" class="mb-4"><label data-id="253" class="form-label">Target Customer</label><input data-id="254" type="text" id="etsy-target-ms01" class="form-input" placeholder="e.g., A woman who loves quiet mornings and faith"></div>
+        <div data-id="255" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div data-id="256"><label data-id="257" class="form-label">Materials</label><input data-id="258" type="text" id="etsy-materials-ms01" class="form-input" placeholder="e.g., 100% organic cotton canvas"></div>
+          <div data-id="259"><label data-id="260" class="form-label">Sizes / Variants</label><input data-id="261" type="text" id="etsy-sizes-ms01" class="form-input" placeholder="e.g., 15x16in, Natural / Sage"></div>
+        </div>
+        <div data-id="262" class="mb-4"><label data-id="263" class="form-label">Shipping</label><select data-id="264" id="etsy-shipping-ms01" class="form-input"><option data-id="265">Ships in 3-5 days</option><option data-id="266">Made to order 1-2 weeks</option><option data-id="267">Digital instant download</option></select></div>
+        <button data-id="268" class="btn-primary w-full justify-center" id="gen-etsy-ms01"><i data-id="269" data-lucide="wand-2" class="w-4 h-4"></i> Generate Full Etsy Listing</button>
+      </div>
+      <div data-id="270" id="etsy-output-ms01" class="mb-6"></div>
+    </div>
+    <div data-id="271">
+      <h3 data-id="272" class="font-heading text-lg font-semibold mb-3">Saved Listings</h3>
+      <div data-id="273" class="space-y-3" id="saved-listings-ms01"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 7: SOCIAL STUDIO ===== -->
+<section data-id="274" id="section-social" class="content-section p-4 md:p-8 max-w-6xl mx-auto">
+  <div data-id="275" class="mb-6">
+    <h1 data-id="276" class="font-heading text-2xl md:text-3xl font-semibold">Social Studio</h1>
+    <p data-id="277" class="text-charcoal-light text-sm italic">Share your work with warmth and intention.</p>
+  </div>
+  <div data-id="278" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div data-id="279" class="lg:col-span-2">
+      <div data-id="280" class="bg-warm-white rounded-xl p-6 border border-sand-light/50 mb-6">
+        <div data-id="281" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div data-id="282"><label data-id="283" class="form-label">What to Post About</label><select data-id="284" id="social-topic-ms01" class="form-input"><option data-id="285">New Product Launch</option><option data-id="286">Collection Reveal</option><option data-id="287">Behind the Scenes</option><option data-id="288">Sneak Peek</option><option data-id="289">Sale or Promotion</option><option data-id="290">Scripture + Art</option><option data-id="291">Process Video</option><option data-id="292">Personal Story</option><option data-id="293">Seasonal Post</option><option data-id="294">Restock</option></select></div>
+          <div data-id="295"><label data-id="296" class="form-label">Product / Collection</label><input data-id="297" type="text" id="social-ref-ms01" class="form-input" placeholder="e.g., Coastal Morning Collection"></div>
+        </div>
+        <div data-id="298" class="mb-4">
+          <label data-id="299" class="form-label mb-2">Platform</label>
+          <div data-id="300" class="flex flex-wrap gap-2" id="social-platforms-ms01"></div>
+        </div>
+        <div data-id="301" class="mb-4">
+          <label data-id="302" class="form-label mb-1">Tone</label>
+          <div data-id="303" class="flex items-center gap-3">
+            <span data-id="304" class="text-xs text-charcoal-light">Quiet & Poetic</span>
+            <input data-id="305" type="range" min="0" max="2" value="1" class="tone-slider flex-1" id="social-tone-ms01">
+            <span data-id="306" class="text-xs text-charcoal-light">Bright & Inviting</span>
+          </div>
+        </div>
+        <div data-id="307" class="flex flex-wrap gap-4 mb-4">
+          <label data-id="308" class="flex items-center gap-2 text-sm cursor-pointer"><input data-id="309" type="checkbox" id="social-scripture-ms01" checked class="accent-sage-dark"> Include scripture</label>
+          <label data-id="310" class="flex items-center gap-2 text-sm cursor-pointer"><input data-id="311" type="checkbox" id="social-cta-ms01" checked class="accent-sage-dark"> Include call to action</label>
+          <label data-id="312" class="flex items-center gap-2 text-sm cursor-pointer"><input data-id="313" type="checkbox" id="social-hashtags-ms01" checked class="accent-sage-dark"> Include hashtags</label>
+        </div>
+        <button data-id="314" class="btn-primary w-full justify-center" id="gen-social-ms01"><i data-id="315" data-lucide="wand-2" class="w-4 h-4"></i> Generate Social Post</button>
+      </div>
+      <div data-id="316" id="social-output-ms01" class="mb-6"></div>
+    </div>
+    <div data-id="317">
+      <h3 data-id="318" class="font-heading text-lg font-semibold mb-3">Post Templates</h3>
+      <div data-id="319" class="space-y-3 mb-6" id="post-templates-ms01"></div>
+      <h3 data-id="320" class="font-heading text-lg font-semibold mb-3">Hashtag Bank</h3>
+      <div data-id="321" id="hashtag-bank-ms01"></div>
+    </div>
+  </div>
+</section>
+
+<footer data-id="322" class="md:ml-0 text-center py-8 text-xs text-charcoal-light border-t border-sand-light mt-8">
+  <div data-id="323" class="flex items-center justify-center gap-2 mb-1">
+    <svg data-id="324" width="16" height="16" viewBox="0 0 24 24" fill="none"><path data-id="325" d="M12 3C6.48 3 2 6.48 2 11c0 2.67 1.36 5.02 3.44 6.5L4 22l4.5-2.5c1.1.3 2.27.5 3.5.5 5.52 0 10-3.48 10-8s-4.48-8-10-8z" stroke="#A8BAA3" stroke-width="1.5" fill="none"/></svg>
+    Made by Copilot
+  </div>
+  <p data-id="326" class="italic text-charcoal-light/60">McSwegin Studio · Create something beautiful today.</p>
+</footer>
+
+</main>
+
+<script>
+// ========== SMART TEMPLATE ENGINE — No AI needed, works fully offline ==========
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+async function fakeLoading(el, duration) {
+  if (!duration) duration = 1200;
+  el.disabled = true;
+  await sleep(duration);
+}
+
+// ========== DATA ==========
+const CATEGORIES = [
+  { id:'ocean', emoji:'🌊', name:'Ocean', mood:'Serene · Expansive · Rhythmic · Eternal', visuals:['Sea glass shapes','Wave outlines (minimal)','Shell silhouettes','Sand dollar line art','Kelp tendrils','Horizon lines'], colors:['#8FA3B1','#C4AA87','#D9E8E3'], colorNames:['Seafoam blue-gray','Warm sand','Pale mint mist'], patterns:['Scattered sea glass and shell line art on cream — simple, scattered placement','Coastal horizon with delicate wave repeat, single ink line style','Sand dollar mandala motif, centered with fine crosshatch detail'], scripture:'He stilled the storm to a whisper; the waves of the sea were hushed. — Psalm 107:29', useIn:['Wall Art','Tote','Tea Towel','Stationery'] },
+  { id:'music', emoji:'🎵', name:'Music', mood:'Lyrical · Flowing · Soulful · Layered', visuals:['Treble clef outlines','Sheet music fragments','Quarter notes scattered','Slur marks as curves','Staff lines as texture'], colors:['#3A3330','#C4AA87','#F7F3EC'], colorNames:['Deep ink','Warm gold','Cream'], patterns:['Quarter notes and rests scattered as a tossed pattern on cream linen','Sheet music border with botanical vines woven through staff lines','Treble clef as focal illustration surrounded by wildflower sprigs'], scripture:'Sing to the Lord a new song. — Psalm 96:1', useIn:['Journal Cover','Mug','Tote','Apparel'] },
+  { id:'worship', emoji:'🙏', name:'Worship', mood:'Reverent · Warm · Lifted · Still', visuals:['Hands in prayer (line art)','Incense/candle smoke wisps','Arch window outlines','Cross with botanical wreath','Flowing robe folds'], colors:['#C4A050','#A8BAA3','#FAF8F4'], colorNames:['Gold','Sage','Warm white'], patterns:['Delicate arch-window repeat with botanical garlands — cathedral garden feeling','Prayer hands as central medallion surrounded by olive branches','Candle flame with radiating fine-line rays, scattered on neutral ground'], scripture:'Come, let us bow down in worship. — Psalm 95:6', useIn:['Wall Art','Stationery','Gift Wrap','Apparel'] },
+  { id:'scripture', emoji:'📖', name:'Scripture', mood:'Grounded · Faithful · Timeless · Quiet', visuals:['Open book outlines','Botanical borders framing text','Calligraphy flourishes','Single verse as central design','Fine ruled lines'], colors:['#C4AA87','#8FA3B1','#F7F3EC'], colorNames:['Aged parchment gold','Ink blue','Cream'], patterns:['Botanically bordered scripture print with minimal wide margins — gallery wall ready','Single word — peace, beloved, grace — in elegant script surrounded by tiny wildflowers','Open Bible outline as repeat pattern with tiny botanical fills'], scripture:'Your word is a lamp to my feet and a light to my path. — Psalm 119:105', useIn:['Wall Art','Stationery','Journal','Mug'] },
+  { id:'wildflowers', emoji:'🌸', name:'Wildflowers', mood:'Free · Tender · Abundant · Gentle', visuals:["Queen Anne's lace",'Daisy line art','Lavender sprigs','Clover','Poppy outlines','Scattered petal shapes','Twisting stems'], colors:['#C9A096','#A8BAA3','#DDD0BC'], colorNames:['Dusty rose','Sage','Warm ivory'], patterns:["Loose wildflower toss on cream — Queen Anne's lace, daisies, lavender, minimal ink",'Wildflower wreath framing empty center — perfect for monogram or text','Single stem repeat — one daisy, one lavender, alternating rows, organic spacing'], scripture:'Consider the lilies of the field, how they grow. — Matthew 6:28', useIn:['Fabric','Gift Wrap','Apparel','Tote','Tea Towel'] },
+  { id:'mountains', emoji:'🏔️', name:'Mountains', mood:'Majestic · Grounding · Silent · Strong', visuals:['Layered ridge silhouettes (minimal line)','Pine tree outlines','Peak detail hatching','Valley mist lines','Stone texture'], colors:['#8FA3B1','#A8BAA3','#3A3330'], colorNames:['Misty blue','Sage','Deep charcoal'], patterns:['Layered mountain ridge repeat — three lines of peaks at varying heights','Single mountain with pine tree border in fine line art, classic and clean','Mountain silhouette with scripture whispered across the ridge in tiny script'], scripture:'I lift up my eyes to the mountains — where does my help come from? — Psalm 121:1', useIn:['Apparel','Mug','Wall Art','Tote','Sticker'] },
+  { id:'seasons', emoji:'🍂', name:'Seasons', mood:'Cyclical · Cozy · Nostalgic · Transitional', visuals:['Acorns and oak leaves (autumn)','Snowflake filigree (winter)','Tulip buds (spring)','Wheat stalks (summer)','Seasonal wreaths'], colors:['#C4AA87','#A8BAA3','#C9A096'], colorNames:['Harvest gold','Sage','Rose blush'], patterns:['Four-seasons botanical banner — one icon per season in a row, repeat','Autumn acorn and oak leaf scatter — loose and organic placement','Winter snowflake with fine-line botanical centers instead of geometric spokes'], scripture:'To everything there is a season, a time for every purpose. — Ecclesiastes 3:1', useIn:['Gift Wrap','Tea Towel','Apparel','Stationery'] },
+  { id:'birds', emoji:'🐦', name:'Birds', mood:'Hopeful · Free · Watchful · Gentle', visuals:['Sparrow outlines','Wing detail in hatching','Branch perch with leaves','In-flight silhouettes','Nest with eggs','Feather shapes'], colors:['#C9A096','#C4AA87','#F7F3EC'], colorNames:['Dusty rose','Warm gold','Cream'], patterns:['Sparrow on a branch — minimal line art, perched, with leaf detail','Scattered feather toss pattern — varied sizes, organic angles','Three birds in flight, rising, with scripture whispered below'], scripture:'Look at the birds of the air... your heavenly Father feeds them. — Matthew 6:26', useIn:['Apparel','Wall Art','Stationery','Mug'] },
+  { id:'strings', emoji:'🎻', name:'Strings', mood:'Melodic · Warm · Resonant · Intimate', visuals:['Violin/cello outline','Bow curve','Tuning pegs','String lines as texture','Sound hole (f-hole) shapes','Rosin dust'], colors:['#C4A050','#3A3330','#F7F3EC'], colorNames:['Warm wood gold','Deep ink','Cream'], patterns:['Violin outline as focal illustration with botanical wreath integrated into scroll','F-hole shapes as repeat pattern — elegant, abstract, layered','Bow and strings as gesture drawing — sweeping curves suggesting movement'], scripture:'Praise him with the strings and pipe. — Psalm 150:4', useIn:['Wall Art','Apparel','Mug','Stationery'] },
+  { id:'cafes', emoji:'☕', name:'Cozy Cafés', mood:'Slow · Warm · Gathered · Unhurried', visuals:['Coffee cup steam wisps','Croissant outline','Open book beside cup','Pressed flower botanical','Cafe window','Handwritten menu'], colors:['#C4AA87','#A8BAA3','#C9A096'], colorNames:['Warm cream caramel','Sage','Rose'], patterns:['Coffee cup with botanical sprig tucked behind handle — cozy and elegant','Steam wisps as delicate repeat texture, minimal, linen-feel','Croissant, cup, and pressed wildflower trio — café still life scatter'], scripture:'She... rises while it is still night. — Proverbs 31:15', useIn:['Mug','Tea Towel','Tote','Stationery','Apron'] },
+  { id:'hymns', emoji:'🎼', name:'Hymns', mood:'Anchored · Devotional · Rich · Historical', visuals:['Antique hymnbook outline','Musical stave with lyrics','Old gothic letter caps','Hymn title in calligraphy','Quarter note vines'], colors:['#C4A050','#8FA3B1','#EDE5D4'], colorNames:['Aged gold','Faded ink blue','Aged parchment'], patterns:['Hymnbook open with wildflower pressed between pages — still life illustration',"Hymn lyric fragment in elegant script: 'Great is thy faithfulness' scattered on cream",'Staff lines as horizontal texture with tiny botanical accents between lines'], scripture:'Speaking to one another with psalms, hymns, and spiritual songs. — Ephesians 5:19', useIn:['Wall Art','Journal','Stationery','Apparel'] },
+  { id:'rain', emoji:'🌧️', name:'Rain', mood:'Contemplative · Refreshing · Tender · Quiet', visuals:['Raindrop outlines (oval, elongated)','Window glass with drops','Umbrella silhouette','Puddle ripples','Wet leaf detail','Streaked glass texture'], colors:['#8FA3B1','#C8D9C3','#F7F3EC'], colorNames:['Rain blue-gray','Sage mist','Pale cream'], patterns:['Raindrop toss pattern — clean oval drops, varied sizes, scattered on pale ground','Window with rain streaks as pattern texture — abstract, minimal, peaceful','Umbrella with botanical handle wrap, single focal illustration, open facing up'], scripture:'He causes his sun to rise on the evil and the good, and sends rain on the righteous. — Matthew 5:45', useIn:['Apparel','Tote','Stationery','Wall Art'] },
+  { id:'morning', emoji:'🌄', name:'Morning Quiet', mood:'Still · Golden · Expectant · Holy', visuals:['Sunrise arc','Coffee steam','Open window','Bird at sill','Journal and pen','Dewdrop on leaf','Golden light rays (fine lines)'], colors:['#C4A050','#DDD0BC','#A8BAA3'], colorNames:['Morning gold','Soft ivory','Sage dawn'], patterns:['Rising sun with fine-line rays and botanical border — hope motif','Morning window with bird and coffee cup — cozy faith-filled still life','Dewdrop on a single leaf as large focal illustration, quiet and simple'], scripture:'His mercies are new every morning; great is your faithfulness. — Lamentations 3:23', useIn:['Mug','Wall Art','Journal','Apparel'] },
+  { id:'creation', emoji:'🌿', name:'Creation', mood:'Awe · Abundant · Wild · Sacred', visuals:['Fern fronds','Leaf botanical collection','Pinecone detail','Berry clusters','Vine tendrils','Seed pods','Roots and soil detail'], colors:['#A8BAA3','#6E9467','#EDE5D4'], colorNames:['Deep sage','Forest green','Earth cream'], patterns:['Full botanical collection spread — ferns, berries, pods, and leaves in ink illustration style','Single fern frond as large focal motif, fine hatching detail on fronds','Seed-to-bloom growth sequence — root to sprout to flower in a row'], scripture:"The earth is the Lord's, and everything in it. — Psalm 24:1", useIn:['Fabric','Gift Wrap','Tote','Tea Towel','Wall Art'] }
+];
+
+const PRODUCT_TYPES = [
+  { id:'wall-art', emoji:'🖼️', name:'Wall Art Print', desc:'Digital download or print-on-demand', dims:'8x10in, 11x14in, 16x20in + bleed', dpi:'300 DPI', color:'RGB for digital, CMYK for print', format:'PNG, PDF, TIFF', partners:'Printify, Printful, Society6, local printer', pricing:'$8-15 cost + 50-70% = $14-28 retail', mockup:'Frame on styled shelf, living room wall, flat lay with botanicals' },
+  { id:'tote', emoji:'👜', name:'Tote Bag', desc:'Canvas, all-over or panel design', dims:'15x16in panel or 30x32in all-over + bleed', dpi:'150-300 DPI', color:'RGB', format:'PNG', partners:'Printify, Printful, Gooten', pricing:'$10-14 cost + 60% = $18-26 retail', mockup:'Flat lay on linen, hanging on hook, styled with flowers/books' },
+  { id:'mug', emoji:'☕', name:'Mug', desc:'Ceramic, wraparound or centered', dims:'9.5x3.5in wraparound + bleed', dpi:'300 DPI', color:'RGB', format:'PNG', partners:'Printify, Printful', pricing:'$6-9 cost + 65% = $12-18 retail', mockup:'Coffee steam, morning light, cozy desk scene' },
+  { id:'apparel', emoji:'👕', name:'Apparel', desc:'T-shirt, sweatshirt, front/back', dims:'12x16in front print area', dpi:'300 DPI', color:'RGB (transparent BG)', format:'PNG', partners:'Printify, Printful, Bella+Canvas', pricing:'$12-18 cost + 55% = $22-34 retail', mockup:'Flat lay, model lifestyle, hanger on hook' },
+  { id:'tea-towel', emoji:'🧺', name:'Tea Towel', desc:'Linen, full surface or border', dims:'18x28in + bleed', dpi:'150 DPI', color:'RGB', format:'PNG, PDF', partners:'Spoonflower, Printify', pricing:'$8-12 cost + 60% = $14-22 retail', mockup:'Draped over oven handle, folded on counter, flat lay with herbs' },
+  { id:'stationery', emoji:'📝', name:'Stationery Set', desc:'Cards, notepad, stickers', dims:'5x7in cards, 4.25x5.5in notes', dpi:'300 DPI', color:'CMYK for print, RGB for digital', format:'PDF, PNG', partners:'Local printer, Moo, Vistaprint', pricing:'Set of 8: $6-10 cost + 65% = $12-18', mockup:'Flat lay with pen, wax seal, envelope styling' },
+  { id:'gift-wrap', emoji:'🎁', name:'Gift Wrap', desc:'Roll or sheet, full pattern', dims:'24x36in seamless tile', dpi:'150 DPI', color:'RGB', format:'PNG', partners:'Spoonflower, Zazzle', pricing:'$4-8/sheet cost + 60% = $8-14 retail', mockup:'Wrapped gift with ribbon, rolls arranged, texture close-up' },
+  { id:'journal', emoji:'📒', name:'Journal Cover', desc:'Hardcover or softcover', dims:'6x9in front cover + spine + back', dpi:'300 DPI', color:'CMYK', format:'PDF', partners:'Lulu, Amazon KDP, Printify', pricing:'$5-9 cost + 65% = $10-18 retail', mockup:'Open with pen, stacked, on nightstand' },
+  { id:'fabric', emoji:'🪡', name:'Fabric Yardage', desc:'For Spoonflower etc.', dims:'Seamless tile, 12x12in minimum', dpi:'150 DPI', color:'RGB (sRGB)', format:'PNG, TIFF', partners:'Spoonflower, Contrado', pricing:'$18-28/yard cost + 40% = $26-40 retail', mockup:'Draped fabric swatch, sewing flat lay, close-up texture' },
+  { id:'sticker', emoji:'🏷️', name:'Sticker Sheet', desc:'Die-cut or kiss-cut', dims:'4x6in sheet, individual 1-3in', dpi:'300 DPI', color:'RGB + transparent', format:'PNG', partners:'StickerMule, Printify', pricing:'$2-4/sheet cost + 70% = $4-8 retail', mockup:'On laptop, in planner, sheet flat lay' },
+  { id:'digital', emoji:'💾', name:'Digital Download', desc:'Printable art', dims:'Multiple sizes: 5x7, 8x10, 11x14, A4', dpi:'300 DPI', color:'RGB + CMYK versions', format:'PDF, PNG, JPG', partners:'Etsy digital delivery', pricing:'No physical cost = $3-12 retail (pure margin)', mockup:'Frame mockup, multiple sizes shown, styled room preview' },
+  { id:'pillow', emoji:'🛋️', name:'Pillow Cover', desc:'Throw pillow, square', dims:'18x18in or 20x20in + bleed', dpi:'150-300 DPI', color:'RGB', format:'PNG', partners:'Printify, Printful, Society6', pricing:'$12-18 cost + 55% = $22-34 retail', mockup:'On sofa, bed styling, stacked arrangement' }
+];
+
+const PATTERN_TYPES = ['Surface Pattern Repeat','Focal Illustration','Border Design','Scattered Toss','Coordinate Pattern','Medallion / Mandala','Collection Spread'];
+const PALETTES = ['Coastal Neutral','Sage & Rose','Earthy Devotional','Deep Forest','Morning Gold','Custom'];
+const STYLE_ELEMENTS = ['Fine line art','Botanical detail','Scripture whisper','Hand-drawn feel','Minimal negative space','Cottagecore elements','Coastal elements','Faith motifs','Ink & watercolor','Pencil sketch feel'];
+const POST_TEMPLATES = [
+  { title:'New Listing Launch', preview:'Something new has arrived in the shop...', icon:'shopping-bag' },
+  { title:'Process Share', preview:'Ink on paper. Hours of quiet. A pattern is born...', icon:'pen-line' },
+  { title:'Scripture Post', preview:'[Scripture] · Designed this with this verse on my heart...', icon:'book-open' },
+  { title:'Collection Reveal', preview:'Introducing [Collection Name]...', icon:'layers' },
+  { title:'Behind the Scenes', preview:'My studio at golden hour...', icon:'camera' },
+  { title:'Seasonal Post', preview:'The [season] collection is here...', icon:'sun' },
+  { title:'Gratitude Post', preview:'This little shop has grown because of you...', icon:'heart' },
+  { title:'Morning Post', preview:'Good morning, friends. New in the shop...', icon:'sunrise' }
+];
+const HASHTAG_BANK = {
+  'Brand': ['#McSweginStudio','#HandmadeByMegan','#McSweginDesigns'],
+  'Niche': ['#SurfacePatternDesign','#PatternDesigner','#FaithBasedArt','#CottageCore','#CoastalStyle'],
+  'Audience': ['#HandmadeGifts','#EtsyShop','#ArtisanMade','#PaperGoods','#PrintableArt'],
+  'Faith': ['#FaithAndArt','#ScriptureArt','#ChristianDesign','#FaithInspired','#Worship'],
+  'Aesthetic': ['#NeutralAesthetic','#EarthyTones','#MinimalistArt','#SoftAesthetic','#CottageAesthetic']
+};
+const SOCIAL_PLATFORMS = ['Instagram','Pinterest','Facebook','TikTok','All at once'];
+
+// ========== STATE ==========
+let savedIdeas = [];
+let savedCollections = [
+  { name:'Coastal Morning', primary:'Ocean', secondary:'Morning Quiet', season:'Spring', patterns:8 },
+  { name:'Holy Ground', primary:'Worship', secondary:'Scripture', season:'Evergreen', patterns:6 },
+  { name:'Wildwood Hymns', primary:'Creation', secondary:'Hymns', season:'Autumn', patterns:10 }
+];
+let promptHistory = [
+  { name:'Coastal Shell Toss', category:'Ocean', type:'Scattered Toss', palette:'Coastal Neutral', prompt:'Create a scattered surface pattern of delicate sea glass shapes, sand dollar line art, and minimal shell silhouettes on a cream linen background...' },
+  { name:'Morning Sparrow', category:'Birds', type:'Focal Illustration', palette:'Morning Gold', prompt:'Illustrate a single sparrow perched on a branch with fine ink line work, golden morning light rays radiating behind...' },
+  { name:'Great Is Thy Faithfulness', category:'Hymns', type:'Medallion / Mandala', palette:'Earthy Devotional', prompt:'Design a circular medallion with the hymn title in elegant calligraphy at center, surrounded by botanical wreath of wildflowers and wheat...' }
+];
+let savedListings = [
+  { name:'Coastal Shell Toss Tote', type:'Tote Bag', status:'Ready' },
+  { name:'Morning Sparrow Wall Print', type:'Wall Art Print', status:'Published' },
+  { name:'Hymnal Wildflower Journal', type:'Journal Cover', status:'Draft' }
+];
+let moodTags = [];
+let selectedPatStyles = [];
+let selectedPlatform = 'Instagram';
+let selectedProductType = null;
+
+// ========== PERSISTENCE WITH AppSDK ==========
+const SDK = window.AppSDK;
+
+async function loadAllData() {
+  try {
+    const ideasResult = await SDK.list('ms_saved_ideas');
+    if (ideasResult.documents.length > 0) {
+      const doc = ideasResult.documents[0];
+      savedIdeas = doc.data.items || [];
+    }
+    const collResult = await SDK.list('ms_collections');
+    if (collResult.documents.length > 0) {
+      savedCollections = collResult.documents[0].data.items || savedCollections;
+    }
+    const promptResult = await SDK.list('ms_prompts');
+    if (promptResult.documents.length > 0) {
+      promptHistory = promptResult.documents[0].data.items || promptHistory;
+    }
+    const listResult = await SDK.list('ms_listings');
+    if (listResult.documents.length > 0) {
+      savedListings = listResult.documents[0].data.items || savedListings;
+    }
+  } catch(e) {
+    // Use defaults
+  }
+  updateSavedBadge();
+  renderSavedCollections();
+  renderPromptHistory();
+  renderSavedListings();
+  renderInspoCards();
+}
+
+async function savePersist() {
+  updateSavedBadge();
+  try {
+    await SDK.upsert('ms_saved_ideas', 'main', { items: savedIdeas });
+    await SDK.upsert('ms_collections', 'main', { items: savedCollections });
+    await SDK.upsert('ms_prompts', 'main', { items: promptHistory });
+    await SDK.upsert('ms_listings', 'main', { items: savedListings });
+  } catch(e) {
+    // Silently fail
+  }
+}
+
+// ========== UTILITIES ==========
+function showToast(msg) {
+  const t = document.getElementById('toast-notif-ms01');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function copyText(text) {
+  navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard ✦')).catch(() => showToast('Copy failed'));
+}
+
+function copyFromBtn(btnEl, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btnEl.textContent;
+    btnEl.textContent = '✓ Copied!';
+    btnEl.style.background = 'var(--sage-light)';
+    setTimeout(() => { btnEl.textContent = orig; btnEl.style.background = ''; }, 2000);
+    showToast('Copied to clipboard ✦');
+  }).catch(() => showToast('Copy failed'));
+}
+
+function updateSavedBadge() {
+  const b = document.getElementById('saved-badge-ms01');
+  const c = document.getElementById('ideas-saved-count-ms01');
+  if (savedIdeas.length > 0) { b.style.display = 'inline-flex'; b.textContent = savedIdeas.length; }
+  else { b.style.display = 'none'; }
+  if (c) c.textContent = savedIdeas.length;
+}
+
+function showSpinner(container) {
+  container.innerHTML = '<div class="botanical-spinner"><div class="spinner"></div><span class="italic">Creating something beautiful...</span></div>';
+}
+
+function navigateTo(section) {
+  document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.sidebar-nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll('.mobile-tab').forEach(t => t.classList.remove('active'));
+  const sec = document.getElementById('section-' + section);
+  if (sec) sec.classList.add('active');
+  document.querySelectorAll('.sidebar-nav-item[data-section="' + section + '"]').forEach(n => n.classList.add('active'));
+  document.querySelectorAll('.mobile-tab[data-section="' + section + '"]').forEach(t => t.classList.add('active'));
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function reinitIcons() {
+  if (typeof lucide !== 'undefined' && typeof lucide.createIcons === 'function') lucide.createIcons();
+}
+
+// ========== GREETING ==========
+function setGreeting() {
+  const h = new Date().getHours();
+  let g = 'afternoon';
+  if (h < 12) g = 'morning';
+  else if (h >= 17) g = 'evening';
+  document.getElementById('greeting-h1-ms01').innerHTML = 'Good ' + g + ', Megan <span style="color:var(--gold);">✦</span> Let\'s create something beautiful today.';
+}
+setGreeting();
+
+// ========== PALETTE SWATCHES ==========
+function renderPaletteSwatches() {
+  const colors = [
+    { hex:'#F7F3EC', name:'Cream' },{ hex:'#EDE5D4', name:'Cream Dark' },{ hex:'#FDFAF6', name:'Warm White' },
+    { hex:'#A8BAA3', name:'Sage' },{ hex:'#C8D9C3', name:'Sage Light' },{ hex:'#6E9467', name:'Sage Dark' },
+    { hex:'#C9A096', name:'Dusty Rose' },{ hex:'#C4AA87', name:'Sand' },{ hex:'#8FA3B1', name:'Blue-Gray' },
+    { hex:'#3A3330', name:'Charcoal' },{ hex:'#C4A050', name:'Gold' }
+  ];
+  const c = document.getElementById('palette-swatches-ms01');
+  c.innerHTML = colors.map(cl => '<div class="flex items-center gap-1" title="' + cl.name + ': ' + cl.hex + '"><span class="color-swatch" style="background:' + cl.hex + ';"></span><span class="text-xs text-charcoal-light">' + cl.name + '</span></div>').join('');
+}
+renderPaletteSwatches();
+
+// ========== TODAY'S INSPIRATION ==========
+function renderTodaysInspo() {
+  const cat = CATEGORIES[Math.floor(Math.random() * CATEGORIES.length)];
+  const el = document.getElementById('todays-inspo-ms01');
+  el.innerHTML = '<div class="fade-in-up">' +
+    '<div class="text-2xl mb-1">' + cat.emoji + ' <span class="font-heading font-semibold text-lg">' + cat.name + '</span></div>' +
+    '<p class="text-sm text-charcoal-light italic mb-3">' + cat.mood + '</p>' +
+    '<ul class="space-y-1 text-sm mb-3">' + cat.patterns.map(function(p) { return '<li class="flex gap-2"><span class="text-sage">✦</span> ' + p + '</li>'; }).join('') + '</ul>' +
+    '<p class="text-xs italic text-charcoal-light">"' + cat.scripture + '"</p>' +
+  '</div>';
+}
+renderTodaysInspo();
+
+// ========== DASHBOARD CATEGORY CHIPS ==========
+function renderDashCategoryChips() {
+  const c = document.getElementById('dash-category-chips-ms01');
+  c.innerHTML = CATEGORIES.map(function(cat) { return '<button class="category-pill dash-cat-chip" data-cat="' + cat.id + '">' + cat.emoji + ' ' + cat.name + '</button>'; }).join('');
+  c.querySelectorAll('.dash-cat-chip').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      navigateTo('inspiration');
+      setTimeout(function() {
+        const pills = document.querySelectorAll('.filter-pill-item');
+        pills.forEach(function(p) { p.classList.remove('active-pill'); });
+        const target = document.querySelector('.filter-pill-item[data-cat="' + btn.dataset.cat + '"]');
+        if (target) target.classList.add('active-pill');
+        renderInspoCards();
+      }, 100);
+    });
+  });
+}
+renderDashCategoryChips();
+
+// ========== INSPIRATION BANK ==========
+let activeFilters = CATEGORIES.map(function(c) { return c.id; });
+
+function renderFilterPills() {
+  const c = document.getElementById('filter-pills-ms01');
+  c.innerHTML = CATEGORIES.map(function(cat) { return '<button class="category-pill filter-pill-item active-pill" data-cat="' + cat.id + '">' + cat.emoji + ' ' + cat.name + '</button>'; }).join('');
+  c.querySelectorAll('.filter-pill-item').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      btn.classList.toggle('active-pill');
+      activeFilters = Array.from(document.querySelectorAll('.filter-pill-item.active-pill')).map(function(p) { return p.dataset.cat; });
+      renderInspoCards();
+    });
+  });
+}
+renderFilterPills();
+
+function renderInspoCards() {
+  const c = document.getElementById('inspo-cards-ms01');
+  const filtered = CATEGORIES.filter(function(cat) { return activeFilters.includes(cat.id); });
+  c.innerHTML = filtered.map(function(cat) {
+    var isSaved = savedIdeas.includes(cat.id);
+    return '<div class="insp-card card-hover fade-in-up">' +
+      '<div class="flex items-start justify-between mb-2"><div><span class="text-2xl">' + cat.emoji + '</span> <span class="font-heading text-xl font-semibold">' + cat.name + '</span></div></div>' +
+      '<p class="text-sm text-charcoal-light italic mb-3">' + cat.mood + '</p>' +
+      '<div class="mb-3"><p class="form-label mb-1">Visual Elements</p><div class="flex flex-wrap gap-1">' + cat.visuals.map(function(v) { return '<span class="product-badge">' + v + '</span>'; }).join('') + '</div></div>' +
+      '<div class="mb-3"><p class="form-label mb-1">Color Story</p><div class="flex gap-2">' + cat.colors.map(function(cl,i) { return '<div class="flex items-center gap-1"><span class="color-swatch" style="background:' + cl + ';"></span><span class="text-xs">' + cat.colorNames[i] + '</span></div>'; }).join('') + '</div></div>' +
+      '<div class="mb-3"><p class="form-label mb-1">Pattern Ideas</p><ul class="space-y-1 text-sm">' + cat.patterns.map(function(p) { return '<li class="flex gap-2"><span class="text-sage">✦</span> ' + p + '</li>'; }).join('') + '</ul></div>' +
+      '<div class="mb-3 p-3 bg-cream-dark rounded-lg"><p class="text-xs italic text-charcoal-light">"' + cat.scripture + '"</p></div>' +
+      '<div class="flex flex-wrap gap-1 mb-4">' + cat.useIn.map(function(u) { return '<span class="product-badge">' + u + '</span>'; }).join('') + '</div>' +
+      '<div class="flex gap-2 flex-wrap">' +
+        '<button class="btn-secondary save-idea-btn" data-cat="' + cat.id + '"><i data-lucide="bookmark" class="w-3 h-3"></i> ' + (isSaved ? 'Saved ✦' : 'Save Idea') + '</button>' +
+        '<button class="btn-primary text-xs use-in-pattern-btn" data-cat="' + cat.id + '"><i data-lucide="palette" class="w-3 h-3"></i> Use in Pattern Studio</button>' +
+      '</div></div>';
+  }).join('');
+  reinitIcons();
+  c.querySelectorAll('.save-idea-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var id = btn.dataset.cat;
+      if (!savedIdeas.includes(id)) { savedIdeas.push(id); savePersist(); btn.innerHTML = '<i data-lucide="bookmark" class="w-3 h-3"></i> Saved ✦'; showToast('Idea saved ✦'); }
+      else { savedIdeas = savedIdeas.filter(function(i) { return i !== id; }); savePersist(); btn.innerHTML = '<i data-lucide="bookmark" class="w-3 h-3"></i> Save Idea'; showToast('Idea removed'); }
+      reinitIcons();
+    });
+  });
+  c.querySelectorAll('.use-in-pattern-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      navigateTo('pattern');
+      setTimeout(function() {
+        document.querySelectorAll('.pat-cat-pill').forEach(function(p) { p.classList.remove('active-pill'); });
+        var t = document.querySelector('.pat-cat-pill[data-cat="' + btn.dataset.cat + '"]');
+        if (t) t.classList.add('active-pill');
+      }, 100);
+    });
+  });
+}
+renderInspoCards();
+
+// ========== COLLECTION PLANNER ==========
+const collProductTypes = ['Wall Art','Tote Bag','Mug','Apparel','Tea Towel','Stationery','Gift Wrap','Fabric','Journal','Sticker','Digital Download','Pillow'];
+
+function initCollectionForm() {
+  const sel = document.getElementById('coll-primary-ms01');
+  CATEGORIES.forEach(function(cat) { var o = document.createElement('option'); o.value = cat.name; o.textContent = cat.emoji + ' ' + cat.name; sel.appendChild(o); });
+  const pc = document.getElementById('coll-products-ms01');
+  pc.innerHTML = collProductTypes.map(function(p) { return '<label class="flex items-center gap-1 category-pill text-xs cursor-pointer"><input type="checkbox" value="' + p + '" class="accent-sage-dark" checked> ' + p + '</label>'; }).join('');
+}
+initCollectionForm();
+
+document.getElementById('mood-tag-input-ms01').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && this.value.trim() && moodTags.length < 5) {
+    e.preventDefault();
+    moodTags.push(this.value.trim());
+    this.value = '';
+    renderMoodTags();
+  }
+});
+function renderMoodTags() {
+  var container = document.getElementById('mood-tags-container-ms01');
+  var input = document.getElementById('mood-tag-input-ms01');
+  container.querySelectorAll('.tag-chip').forEach(function(t) { t.remove(); });
+  moodTags.forEach(function(tag, i) {
+    var chip = document.createElement('span');
+    chip.className = 'tag-chip';
+    chip.innerHTML = tag + ' <button data-idx="' + i + '">&times;</button>';
+    container.insertBefore(chip, input);
+    chip.querySelector('button').addEventListener('click', function() { moodTags.splice(i, 1); renderMoodTags(); });
+  });
+}
+
+function renderSavedCollections() {
+  var c = document.getElementById('saved-collections-ms01');
+  c.innerHTML = savedCollections.map(function(col) {
+    return '<div class="bg-warm-white rounded-xl p-4 border border-sand-light/50 card-hover">' +
+      '<h4 class="font-heading text-base font-semibold">' + col.name + '</h4>' +
+      '<p class="text-xs text-charcoal-light">' + col.primary + (col.secondary ? ' + ' + col.secondary : '') + '</p>' +
+      '<div class="flex gap-2 mt-2"><span class="badge bg-sage-light text-charcoal text-xs">' + col.season + '</span><span class="badge bg-cream-dark text-charcoal-light text-xs">' + col.patterns + ' patterns</span></div></div>';
+  }).join('');
+}
+renderSavedCollections();
+
+// ========== COLLECTION TEMPLATE GENERATOR (offline, no AI) ==========
+var COLLECTION_STORIES = {
+  'Ocean': function(n) { return n + ' was born from long mornings watching light move across still water \u2014 the kind of quiet that holds you. This collection captures the rhythm of the coast: unhurried, wide-open, and full of hidden beauty. Each pattern carries the soul of the shoreline.'; },
+  'Worship': function(n) { return n + ' is a collection rooted in reverence \u2014 the sacred hush of a morning spent in prayer, the warmth of golden candlelight, the peace that passes understanding. Every piece invites the viewer to pause and breathe deeply in the presence of something holy.'; },
+  'Wildflowers': function(n) { return n + ' celebrates the untamed beauty of field and meadow \u2014 the unexpected grace of a daisy growing through stone, the lavender that bends in summer wind. This collection is tender, free, and quietly abundant.'; },
+  'Scripture': function(n) { return n + ' wraps timeless words in botanical beauty, inviting scripture into the everyday spaces of life. Each design whispers truth with elegance \u2014 never shouting, always present, like a verse tucked into the margin of a beloved journal.'; },
+  'Birds': function(n) { return n + ' follows the sparrow \u2014 small, faithful, and cared for. With delicate line-art birds perched on ink-thin branches, this collection carries a spirit of quiet hope and gentle trust in something greater than the moment.'; },
+  'Mountains': function(n) { return n + ' was shaped by the longing to look up \u2014 to find strength in the layered ridges, the pines, the silent peaks. Grounding and majestic, each pattern in this collection anchors the soul while lifting the eyes.'; },
+  'Hymns': function(n) { return n + ' is a love letter to the old songs \u2014 the ones sung by generations before us, worn smooth like river stones. Botanical illustration meets antique devotion in a collection that feels like finding a hymnbook pressed with wildflowers.'; },
+  'Morning Quiet': function(n) { return n + ' captures the most sacred hour \u2014 before the noise, before the rush, when light is new and mercy is fresh. Warm gold, soft sage, and the still beauty of a world not yet disturbed by the day.'; },
+  'Rain': function(n) { return n + ' is contemplative and tender, inspired by the sound of rain on old windows and the way the world looks clean and new after a storm. Misty, peaceful, and quietly hopeful.'; },
+  'Creation': function(n) { return n + ' is an act of gratitude \u2014 for fern fronds and berry clusters, for root systems and seed pods, for the wild abundance of a world made with care. Deeply botanical, richly detailed, and full of wonder.'; },
+  'Seasons': function(n) { return n + ' moves through the year with intention \u2014 acorns and snowflakes, tulip buds and wheat stalks \u2014 a visual liturgy of the seasons that reminds us everything has its time and its beauty.'; },
+  'Cozy Caf\u00e9s': function(n) { return n + ' is an invitation to slow down \u2014 to linger over a warm cup, to press a wildflower between journal pages, to let the afternoon stretch long and unhurried. Warm, gathered, and deeply cozy.'; },
+  'Strings': function(n) { return n + ' sings. Inspired by the warm resonance of violin and cello, this collection weaves melody into line art \u2014 the bow\'s arc, the f-hole\'s elegant curve, music made visible on cream and linen.'; },
+  'Music': function(n) { return n + ' is lyrical and layered, built from the language of notes and staffs, quarter rests and botanical vines. Each pattern is a song rendered in ink \u2014 something you might hum while drawing.'; }
+};
+
+var COLLECTION_MOTIFS = {
+  'Ocean': ['Sea glass oval shapes', 'Minimal wave line outlines', 'Sand dollar with fine crosshatch', 'Shell silhouettes (conch, scallop)', 'Kelp tendrils and sea grass', 'Horizon line as texture', 'Coastal pebble clusters'],
+  'Wildflowers': ["Queen Anne's lace open bloom", 'Lavender sprig (3\u20135 buds)', 'Daisy with fine petal lines', 'Clover leaf trio', 'Poppy bud outline', 'Loose scattered petals', 'Twisting botanical stem'],
+  'Scripture': ['Open book outline (Bible)', 'Botanical border frame', 'Calligraphy flourish marks', 'Single elegant word lettering', 'Fine ruled line texture', 'Olive branch detail', 'Laurel wreath minimal'],
+  'Worship': ['Prayer hands (fine line)', 'Arched window outline', 'Cross with botanical wreath', 'Candle with flame wisps', 'Incense smoke tendrils', 'Olive branch', 'Cathedral arch repeat'],
+  'Birds': ['Sparrow on branch (perched)', 'In-flight silhouette trio', 'Nest with three eggs', 'Feather shapes (varied)', 'Branch with leaves', 'Wing detail hatching', 'Bird at window sill'],
+  'Mountains': ['Layered ridge silhouettes', 'Single pine tree outline', 'Peak with hatching detail', 'Valley mist lines', 'Stone texture marks', 'Wildflower at mountain base', 'Starfield above ridge'],
+  'Hymns': ['Open hymnbook illustration', 'Staff lines with lyric fragment', 'Quarter note with vine', 'Gothic capital letter', 'Pressed flower between pages', 'Aged paper corner curl', 'Botanical musical border'],
+  'Morning Quiet': ['Rising sun arc with rays', 'Coffee cup with steam', 'Open window outline', 'Dewdrop on single leaf', 'Bird at window sill', 'Journal and pen still life', 'Golden light ray lines'],
+  'Rain': ['Raindrop oval shapes (toss)', 'Window glass with streaks', 'Umbrella with botanical wrap', 'Puddle ripple rings', 'Wet leaf with drop', 'Rain streak texture', 'Cloud outline minimal'],
+  'Creation': ['Fern frond (detailed)', 'Berry cluster on stem', 'Pinecone with scales', 'Seed pod split open', 'Vine tendril curl', 'Root system drawing', 'Botanical collection spread'],
+  'Seasons': ['Acorn with cap detail', 'Oak leaf (autumn veining)', 'Snowflake with botanical center', 'Tulip bud (spring)', 'Wheat stalk (summer)', 'Seasonal wreath frame', 'Berry branch (winter)'],
+  'Strings': ['Violin outline (full body)', 'F-hole shape abstract', 'Bow arc gesture line', 'Tuning peg detail', 'String lines as texture', 'Rosin dust scatter', 'Violin scroll botanical wrap'],
+  'Music': ['Treble clef with florals', 'Quarter notes scattered', 'Staff lines as texture', 'Slur mark curves', 'Sheet music fragment', 'Botanical vine through staff', 'Rest symbols minimal'],
+  'Cozy Caf\u00e9s': ['Coffee cup with botanical sprig', 'Steam wisp lines', 'Croissant outline', 'Open book beside cup', 'Pressed wildflower', 'Caf\u00e9 window frame', 'Spoon and saucer']
+};
+
+document.getElementById('gen-collection-ms01').addEventListener('click', async function() {
+  var name = document.getElementById('coll-name-ms01').value || 'Untitled Collection';
+  var primary = document.getElementById('coll-primary-ms01').value || 'Wildflowers';
+  var secondary = document.getElementById('coll-secondary-ms01').value;
+  var season = document.getElementById('coll-season-ms01').value;
+  var numPat = parseInt(document.getElementById('coll-patterns-ms01').value) || 6;
+  var products = Array.from(document.querySelectorAll('#coll-products-ms01 input:checked')).map(function(cb) { return cb.value; });
+  var c1 = document.getElementById('coll-c1-ms01').value || '#A8BAA3';
+  var c2 = document.getElementById('coll-c2-ms01').value || '#C9A096';
+  var c3 = document.getElementById('coll-c3-ms01').value || '#F7F3EC';
+
+  var output = document.getElementById('coll-output-ms01');
+  showSpinner(output);
+  var btn = this;
+  btn.disabled = true;
+
+  await sleep(1400);
+
+  var storyFn = COLLECTION_STORIES[primary] || COLLECTION_STORIES['Wildflowers'];
+  var story = storyFn(name);
+  if (secondary) story += ' Secondary thread: ' + secondary + ' weaves quietly through, adding depth without competing.';
+
+  var motifs = COLLECTION_MOTIFS[primary] || COLLECTION_MOTIFS['Wildflowers'];
+  var heroCount = 1;
+  var supportCount = Math.min(3, Math.max(2, Math.floor(numPat * 0.4)));
+  var coordCount = Math.max(1, numPat - heroCount - supportCount);
+  var patternBreakdown = 'With ' + numPat + ' patterns planned: start with ' + heroCount + ' hero pattern (your strongest statement piece), ' + supportCount + ' supporting patterns (coordinate with the hero in scale and motif), and ' + coordCount + ' coordinate patterns (simple, small-scale, neutral \u2014 great for backgrounds and bundles).';
+
+  var paletteStory = 'Your color story grounds this collection in the McSwegin Studio palette: warm cream as the constant breath of space, with ' + primary.toLowerCase() + '-inspired accents woven through. The three anchors \u2014 ' + c1 + ', ' + c2 + ', and ' + c3 + ' \u2014 move together like a chord: the neutrals carry the eye without competing, and the earthy undertones give every piece a sense of quiet permanence.';
+
+  var productPriority = [
+    'Wall Art Print (digital download) \u2014 highest margin, easiest to produce first',
+    'Tote Bag \u2014 broad audience, pattern shows beautifully on canvas',
+    'Stationery Set \u2014 great for bundling, strong gift appeal',
+    'Mug \u2014 evergreen product, consistent seller',
+    'Tea Towel \u2014 showcases surface patterns perfectly',
+    'Gift Wrap / Fabric \u2014 for the hero pattern at full scale'
+  ];
+
+  var etsySection = name + ' \u2014 ' + primary + ' Collection';
+  var socialTheme = '"' + name + '" Launch \u00b7 Visual theme: ' + season.toLowerCase() + ' light, neutral linen, botanical styling. Lead with the hero pattern on a cream surface. Caption tone: quiet, poetic, grateful. Use story posts for process, grid posts for final product reveals.';
+
+  output.innerHTML = '<div class="gen-output fade-in-up">' +
+    '<div class="flex items-center justify-between mb-4 flex-wrap gap-2">' +
+      '<h3 class="font-heading text-lg font-semibold">Collection Template: ' + name + '</h3>' +
+      '<div class="flex gap-2">' +
+        '<button class="btn-secondary copy-coll-all-btn"><i data-lucide="copy" class="w-3 h-3"></i> Copy All</button>' +
+        '<button class="btn-primary text-xs save-coll-btn"><i data-lucide="bookmark" class="w-3 h-3"></i> Save Collection</button>' +
+      '</div>' +
+    '</div>' +
+    '<div class="generated-output">' +
+      '<div class="output-block"><div class="output-label">\u2726 Collection Story</div><p class="text-sm" style="line-height:1.8;">' + story + '</p><button class="copy-btn copy-story-btn">Copy</button></div>' +
+      '<div class="output-block"><div class="output-label">\u2726 Pattern Breakdown</div><p class="text-sm" style="line-height:1.8;">' + patternBreakdown + '</p></div>' +
+      '<div class="output-block"><div class="output-label">\u2726 Motifs to Draw (' + motifs.length + ' elements)</div><ul class="text-sm space-y-1">' + motifs.map(function(m) { return '<li class="flex gap-2"><span class="text-sage">\u2726</span> ' + m + '</li>'; }).join('') + '</ul><button class="copy-btn copy-motifs-btn">Copy Motifs</button></div>' +
+      '<div class="output-block"><div class="output-label">\u2726 Palette Story</div><div class="flex gap-2 mb-3"><span class="color-swatch" style="background:' + c1 + ';width:28px;height:28px;"></span><span class="color-swatch" style="background:' + c2 + ';width:28px;height:28px;"></span><span class="color-swatch" style="background:' + c3 + ';width:28px;height:28px;"></span></div><p class="text-sm" style="line-height:1.8;">' + paletteStory + '</p></div>' +
+      '<div class="output-block"><div class="output-label">\u2726 Product Priority Order</div><ol class="text-sm space-y-1" style="list-style:none;padding:0;">' + productPriority.map(function(p, i) { return '<li class="flex gap-2"><span class="text-gold font-semibold">' + (i+1) + '.</span> ' + p + '</li>'; }).join('') + '</ol></div>' +
+      '<div class="output-block"><div class="output-label">\u2726 Etsy Shop Section Name</div><p class="text-sm italic">"' + etsySection + '"</p><button class="copy-btn copy-etsy-section-btn">Copy</button></div>' +
+      '<div class="output-block"><div class="output-label">\u2726 Social Launch Theme</div><p class="text-sm" style="line-height:1.8;">' + socialTheme + '</p><button class="copy-btn copy-social-theme-btn">Copy</button></div>' +
+    '</div></div>';
+
+  var allText = '\u2726 COLLECTION STORY\n' + story + '\n\n\u2726 PATTERN BREAKDOWN\n' + patternBreakdown + '\n\n\u2726 MOTIFS\n' + motifs.join(', ') + '\n\n\u2726 PALETTE STORY\n' + paletteStory + '\n\n\u2726 PRODUCT PRIORITY\n' + productPriority.join('\n') + '\n\n\u2726 ETSY SECTION\n' + etsySection + '\n\n\u2726 SOCIAL THEME\n' + socialTheme;
+
+  reinitIcons();
+
+  output.querySelector('.copy-coll-all-btn').addEventListener('click', function() { copyText(allText); });
+  output.querySelector('.copy-story-btn').addEventListener('click', function() { copyFromBtn(this, story); });
+  output.querySelector('.copy-motifs-btn').addEventListener('click', function() { copyFromBtn(this, motifs.join(', ')); });
+  output.querySelector('.copy-etsy-section-btn').addEventListener('click', function() { copyFromBtn(this, etsySection); });
+  output.querySelector('.copy-social-theme-btn').addEventListener('click', function() { copyFromBtn(this, socialTheme); });
+
+  output.querySelector('.save-coll-btn').addEventListener('click', function() {
+    savedCollections.push({ name: name, primary: primary, secondary: secondary || '', season: season, patterns: numPat });
+    savePersist(); renderSavedCollections(); showToast('Collection saved \u2726');
+  });
+
+  btn.disabled = false;
+  output.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+// ========== PATTERN STUDIO ==========
+function initPatternStudio() {
+  var cc = document.getElementById('pat-categories-ms01');
+  cc.innerHTML = CATEGORIES.map(function(cat) { return '<button class="category-pill pat-cat-pill" data-cat="' + cat.id + '">' + cat.emoji + ' ' + cat.name + '</button>'; }).join('');
+  cc.querySelectorAll('.pat-cat-pill').forEach(function(btn) {
+    btn.addEventListener('click', function() { cc.querySelectorAll('.pat-cat-pill').forEach(function(p) { p.classList.remove('active-pill'); }); btn.classList.add('active-pill'); });
+  });
+
+  var tc = document.getElementById('pat-types-ms01');
+  tc.innerHTML = PATTERN_TYPES.map(function(t) { return '<button class="category-pill pat-type-pill" data-type="' + t + '">' + t + '</button>'; }).join('');
+  tc.querySelectorAll('.pat-type-pill').forEach(function(btn) {
+    btn.addEventListener('click', function() { tc.querySelectorAll('.pat-type-pill').forEach(function(p) { p.classList.remove('active-pill'); }); btn.classList.add('active-pill'); });
+  });
+
+  var pc = document.getElementById('pat-palettes-ms01');
+  pc.innerHTML = PALETTES.map(function(p) { return '<button class="category-pill pat-pal-pill" data-pal="' + p + '">' + p + '</button>'; }).join('');
+  pc.querySelectorAll('.pat-pal-pill').forEach(function(btn) {
+    btn.addEventListener('click', function() { pc.querySelectorAll('.pat-pal-pill').forEach(function(p) { p.classList.remove('active-pill'); }); btn.classList.add('active-pill'); });
+  });
+
+  var sc = document.getElementById('pat-styles-ms01');
+  sc.innerHTML = STYLE_ELEMENTS.map(function(s) { return '<button class="category-pill pat-style-pill" data-style="' + s + '">' + s + '</button>'; }).join('');
+  sc.querySelectorAll('.pat-style-pill').forEach(function(btn) {
+    btn.addEventListener('click', function() { btn.classList.toggle('active-pill'); });
+  });
+}
+initPatternStudio();
+
+function renderPromptHistory() {
+  var c = document.getElementById('prompt-history-ms01');
+  c.innerHTML = promptHistory.map(function(p, i) {
+    return '<div class="bg-warm-white rounded-xl p-4 border border-sand-light/50 card-hover">' +
+      '<h4 class="font-heading text-base font-semibold">' + p.name + '</h4>' +
+      '<p class="text-xs text-charcoal-light">' + p.category + ' \u00b7 ' + p.type + ' \u00b7 ' + p.palette + '</p>' +
+      '<p class="text-xs mt-2 text-charcoal-light" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">' + p.prompt.substring(0, 100) + '...</p>' +
+      '<div class="flex gap-2 mt-3 flex-wrap"><button class="btn-secondary text-xs copy-prompt-btn" data-idx="' + i + '"><i data-lucide="copy" class="w-3 h-3"></i> Copy</button></div></div>';
+  }).join('');
+  reinitIcons();
+  c.querySelectorAll('.copy-prompt-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() { copyText(promptHistory[parseInt(btn.dataset.idx)].prompt); });
+  });
+}
+renderPromptHistory();
+
+// Pattern prompt template maps
+var PAT_PALETTE_COLORS = {
+  'Coastal Neutral': 'warm cream (#F7F3EC), weathered sand (#C4AA87), and soft seafoam blue-gray (#8FA3B1)',
+  'Sage & Rose': 'sage green (#A8BAA3), dusty rose (#C9A096), and warm ivory (#FDFAF6)',
+  'Earthy Devotional': 'aged gold (#C4A050), deep charcoal (#3A3330), and parchment cream (#EDE5D4)',
+  'Deep Forest': 'forest sage (#6E9467), deep charcoal (#3A3330), and earth cream (#EDE5D4)',
+  'Morning Gold': 'morning gold (#C4A050), soft sage dawn (#A8BAA3), and warm ivory (#DDD0BC)',
+  'Custom': 'your custom palette colors'
+};
+
+var PAT_CATEGORY_MOTIFS = {
+  'ocean': 'sea glass shapes, sand dollar line art, shell silhouettes, delicate wave outlines, kelp tendrils, and horizon lines',
+  'music': 'treble clef outlines, scattered quarter notes, staff lines, slur mark curves, and botanical vine fills',
+  'worship': 'prayer hands line art, arched window outlines, cross with botanical wreath, candle flames, and olive branches',
+  'scripture': 'open book outlines, botanical border frames, calligraphy flourishes, olive branches, and laurel details',
+  'wildflowers': "Queen Anne's lace, daisy outlines, lavender sprigs, clover, poppy buds, and scattered petals",
+  'mountains': 'layered ridge silhouettes, pine tree outlines, peak hatching, valley mist lines, and wildflower bases',
+  'seasons': 'acorns, oak leaves, snowflakes with botanical centers, tulip buds, wheat stalks, and seasonal wreath elements',
+  'birds': 'sparrow perched on branch, in-flight silhouettes, feather shapes, nest with eggs, and delicate leaf detail',
+  'strings': 'violin body outline, f-hole shapes, bow arc curves, tuning peg detail, and string line textures',
+  'cafes': 'coffee cup with botanical sprigs, steam wisps, croissant outline, pressed wildflower, and caf\u00e9 window frame',
+  'hymns': 'open hymnbook illustration, staff lines with lyric fragments, quarter notes with vine, and pressed botanical details',
+  'rain': 'raindrop oval shapes, window streaks, umbrella silhouette, puddle ripple rings, and wet botanical leaf detail',
+  'morning': 'sunrise arcs with fine rays, coffee cup steam wisps, open window outlines, dewdrops on leaves, and golden light lines',
+  'creation': 'fern fronds with hatching, berry clusters, pinecones, seed pods, vine tendrils, and root system drawings'
+};
+
+var PAT_TYPE_INSTRUCTIONS = {
+  'Surface Pattern Repeat': 'Design as a seamless repeating surface pattern with elements distributed across a cream ground. Motifs should be scattered in a natural, organic toss arrangement with varied scale and rotation. The repeat unit should tile seamlessly.',
+  'Focal Illustration': 'Create a single large central illustration \u2014 one strong, detailed motif as the hero. Surround with minimal supporting elements. Composition should feel centered and balanced, like a print or art piece.',
+  'Border Design': 'Design as a linear border or frame element. Motifs flow horizontally or form a rectangular frame. Works as a tea towel border, stationery edge, or fabric selvedge.',
+  'Scattered Toss': 'Arrange all motifs in a loose, hand-scattered placement \u2014 as if gently tossed onto the surface. No visible grid. Varied sizes, angles, and spacing. Organic and effortless.',
+  'Coordinate Pattern': 'Design a small-scale, simple supporting pattern that coordinates with a hero design. Lower density, simpler motifs, meant to pair with a larger feature pattern.',
+  'Medallion / Mandala': 'Design as a circular medallion or mandala \u2014 motifs arranged radially from a center point. Can be geometric-meets-botanical. Elegant and centered.',
+  'Collection Spread': 'Create a full illustration spread showing a curated collection of motifs together \u2014 like a botanical study page. Multiple elements at varied scale, casually but thoughtfully arranged.'
+};
+
+var PAT_RENDER_INSTRUCTIONS = {
+  'Procreate illustration': 'Create in Procreate using the HB Pencil or Inking brushes. Work on a cream-toned canvas (hex #F7F3EC). Use black ink lines on the art layer, then add color on layers set to Multiply. Keep lines organic and slightly imperfect \u2014 avoid the machine-perfect look.',
+  'Midjourney prompt': 'Use in Midjourney with the parameters: --style raw --ar 1:1 --v 6. Add style modifiers: "fine line illustration, hand-drawn botanical, cream background, minimal, cottagecore, editorial"',
+  'Adobe Fresco': 'Use Adobe Fresco with Live Watercolor brushes for washes and the Ink pen brush for line work. Set canvas to 3000\u00d73000px at 300dpi. Layer structure: background color \u2192 watercolor washes \u2192 ink line art on top.',
+  'DALL\u00b7E prompt': 'Use in DALL\u00b7E 3 via ChatGPT or API. Append to your prompt: "hand-drawn illustration style, fine line art, cream background, minimal negative space, botanical detail, editorial illustration, no text"',
+  'Canva AI': 'Use in Canva AI image generator. Select "Illustration" style. Keep prompt under 400 characters for best results.',
+  'Pen & paper sketch guide': 'Start with a light pencil rough on cream paper. Use a 0.3mm and 0.5mm Micron pen for final line work. Hatch with the 0.1mm for shadow detail. Scan at 600dpi, remove background in Photoshop, save as PNG with transparency.'
+};
+
+var PAT_PRODUCT_SUGGESTIONS = {
+  'Surface Pattern Repeat': ['Fabric yardage (Spoonflower)', 'Gift wrap sheets', 'Tea towel'],
+  'Focal Illustration': ['Wall art print', 'Mug (centered design)', 'Tote bag (panel print)'],
+  'Border Design': ['Tea towel', 'Stationery borders', 'Gift wrap with edge detail'],
+  'Scattered Toss': ['Tote bag (all-over)', 'Gift wrap', 'Apparel (all-over print)'],
+  'Coordinate Pattern': ['Lining fabric', 'Stationery backgrounds', 'Pillow cover backing'],
+  'Medallion / Mandala': ['Wall art print', 'Pillow cover', 'Round tote'],
+  'Collection Spread': ['Journal cover', 'Art print (botanical study)', 'Fabric panel']
+};
+
+document.getElementById('gen-pattern-ms01').addEventListener('click', async function() {
+  var catPill = document.querySelector('.pat-cat-pill.active-pill');
+  var typePill = document.querySelector('.pat-type-pill.active-pill');
+  var palPill = document.querySelector('.pat-pal-pill.active-pill');
+  var styles = Array.from(document.querySelectorAll('.pat-style-pill.active-pill')).map(function(p) { return p.dataset.style; });
+  var renderStyle = document.getElementById('pat-render-ms01').value;
+
+  var catId = catPill ? catPill.dataset.cat : 'ocean';
+  var cat = CATEGORIES.find(function(c) { return c.id === catId; });
+  var typeName = typePill ? typePill.dataset.type : 'Surface Pattern Repeat';
+  var palName = palPill ? palPill.dataset.pal : 'Coastal Neutral';
+
+  var output = document.getElementById('pat-output-ms01');
+  showSpinner(output);
+  var btn = this;
+  btn.disabled = true;
+
+  await sleep(1300);
+
+  var styleArr = styles.length > 0 ? styles : ['Fine line art', 'Botanical detail', 'Minimal negative space'];
+  var motifs = PAT_CATEGORY_MOTIFS[catId] || PAT_CATEGORY_MOTIFS['wildflowers'];
+  var colors = PAT_PALETTE_COLORS[palName] || PAT_PALETTE_COLORS['Coastal Neutral'];
+  var typeNote = PAT_TYPE_INSTRUCTIONS[typeName] || PAT_TYPE_INSTRUCTIONS['Surface Pattern Repeat'];
+  var renderNote = PAT_RENDER_INSTRUCTIONS[renderStyle] || PAT_RENDER_INSTRUCTIONS['Procreate illustration'];
+
+  var mainPrompt = 'A ' + typeName.toLowerCase() + ' featuring ' + motifs + '. Style: ' + styleArr.join(', ').toLowerCase() + '. Color palette: ' + colors + '. ' + typeNote + ' The overall mood is soft, peaceful, and handcrafted \u2014 evoking a quiet ' + cat.name.toLowerCase() + ' aesthetic with an elegant boutique sensibility. Lines are delicate and slightly imperfect, suggesting a human hand. Negative space breathes freely. No harsh edges. Background is warm cream.';
+
+  var variation1 = 'Monochrome: Same composition in single-color ink (deep charcoal #3A3330) on cream ground. Let the line work carry all the detail without color fills.';
+  var variation2 = 'Botanical focus: Reduce motifs by 50%, increase botanical density and detail. Make every element more intricate \u2014 more hatching, more leaf veining, more fine crosshatch shadow.';
+  var variation3 = 'Loose and airy: Increase white space dramatically. Fewer elements, wider spacing, lighter line weight. The pattern should feel like a whisper rather than a statement.';
+
+  var fileSpecs = typeName === 'Surface Pattern Repeat'
+    ? 'Recommended: 3600\u00d73600px at 300dpi (12"\u00d712" repeat tile), RGB for digital / CMYK for print, save as .PNG (transparent bg) + .PSD/.PROCREATE source'
+    : 'Recommended: 4500\u00d75400px at 300dpi (15"\u00d718" art), RGB for digital / CMYK for print, save as .PNG + layered source file';
+
+  var products = PAT_PRODUCT_SUGGESTIONS[typeName] || ['Wall art print', 'Tote bag', 'Stationery'];
+  var pName = cat.name + ' ' + typeName.split(' ')[0];
+
+  output.innerHTML = '<div class="gen-output fade-in-up">' +
+    '<div class="flex items-center justify-between mb-4 flex-wrap gap-2">' +
+      '<h3 class="font-heading text-lg font-semibold">Generated Pattern Prompt</h3>' +
+      '<div class="flex gap-2">' +
+        '<button class="btn-secondary copy-pat-all-btn"><i data-lucide="copy" class="w-3 h-3"></i> Copy All</button>' +
+        '<button class="btn-primary text-xs save-pat-btn"><i data-lucide="bookmark" class="w-3 h-3"></i> Save Prompt</button>' +
+      '</div>' +
+    '</div>' +
+    '<div class="flex gap-2 mb-3 flex-wrap">' +
+      '<span class="badge bg-sage-light text-charcoal">' + cat.emoji + ' ' + cat.name + '</span>' +
+      '<span class="badge bg-cream-dark text-charcoal-light">' + typeName + '</span>' +
+      '<span class="badge bg-dusty-rose-light text-charcoal-light">' + palName + '</span>' +
+    '</div>' +
+    '<div class="generated-output">' +
+      '<div class="output-block" style="border-left: 3px solid var(--sage-dark);">' +
+        '<div class="output-label">\u2726 Main Art Prompt</div>' +
+        '<p class="text-sm" style="line-height:1.8;">' + mainPrompt + '</p>' +
+        '<button class="copy-btn copy-main-prompt-btn">Copy Prompt</button>' +
+      '</div>' +
+      '<div class="output-block">' +
+        '<div class="output-label">\u2726 Variations</div>' +
+        '<p class="text-sm mb-2"><strong>A:</strong> ' + variation1 + '</p>' +
+        '<p class="text-sm mb-2"><strong>B:</strong> ' + variation2 + '</p>' +
+        '<p class="text-sm"><strong>C:</strong> ' + variation3 + '</p>' +
+      '</div>' +
+      '<div class="output-block">' +
+        '<div class="output-label">\u2726 File Specs</div>' +
+        '<p class="text-sm">' + fileSpecs + '</p>' +
+      '</div>' +
+      '<div class="output-block">' +
+        '<div class="output-label">\u2726 ' + renderStyle + ' Notes</div>' +
+        '<p class="text-sm" style="line-height:1.8;">' + renderNote + '</p>' +
+        '<button class="copy-btn copy-render-btn">Copy</button>' +
+      '</div>' +
+      '<div class="output-block">' +
+        '<div class="output-label">\u2726 Best Products for This Pattern</div>' +
+        '<div class="gen-tag-row">' + products.map(function(p) { return '<span class="gen-tag">' + p + '</span>'; }).join('') + '</div>' +
+      '</div>' +
+    '</div></div>';
+
+  var allPatText = '\u2726 MAIN PROMPT\n' + mainPrompt + '\n\n\u2726 VARIATION A\n' + variation1 + '\n\n\u2726 VARIATION B\n' + variation2 + '\n\n\u2726 VARIATION C\n' + variation3 + '\n\n\u2726 FILE SPECS\n' + fileSpecs + '\n\n\u2726 ' + renderStyle.toUpperCase() + ' NOTES\n' + renderNote + '\n\n\u2726 BEST PRODUCTS\n' + products.join(', ');
+
+  reinitIcons();
+
+  output.querySelector('.copy-pat-all-btn').addEventListener('click', function() { copyText(allPatText); });
+  output.querySelector('.copy-main-prompt-btn').addEventListener('click', function() { copyFromBtn(this, mainPrompt); });
+  output.querySelector('.copy-render-btn').addEventListener('click', function() { copyFromBtn(this, renderNote); });
+
+  output.querySelector('.save-pat-btn').addEventListener('click', function() {
+    promptHistory.unshift({ name: pName, category: cat.name, type: typeName, palette: palName, prompt: mainPrompt });
+    savePersist(); renderPromptHistory(); showToast('Prompt saved \u2726');
+  });
+
+  btn.disabled = false;
+  output.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+// ========== PRODUCT BUILDER ==========
+function renderProductGrid() {
+  var c = document.getElementById('product-grid-ms01');
+  c.innerHTML = PRODUCT_TYPES.map(function(p) {
+    return '<div class="product-type-card" data-product="' + p.id + '">' +
+      '<div class="text-2xl mb-1">' + p.emoji + '</div>' +
+      '<div class="font-heading text-sm font-semibold">' + p.name + '</div>' +
+      '<div class="text-xs text-charcoal-light mt-1">' + p.desc + '</div></div>';
+  }).join('');
+  c.querySelectorAll('.product-type-card').forEach(function(card) {
+    card.addEventListener('click', function() {
+      c.querySelectorAll('.product-type-card').forEach(function(cd) { cd.classList.remove('selected'); });
+      card.classList.add('selected');
+      selectedProductType = card.dataset.product;
+      renderProductSpec();
+    });
+  });
+}
+renderProductGrid();
+
+function renderProductSpec() {
+  var p = PRODUCT_TYPES.find(function(pt) { return pt.id === selectedProductType; });
+  if (!p) return;
+  var c = document.getElementById('prod-spec-ms01');
+  c.innerHTML = '<div class="gen-output fade-in-up mb-6">' +
+    '<h3 class="font-heading text-lg font-semibold mb-3">' + p.emoji + ' ' + p.name + ' \u2014 Product Spec Sheet</h3>' +
+    '<div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">' +
+      '<div><span class="form-label">Dimensions</span><p>' + p.dims + '</p></div>' +
+      '<div><span class="form-label">Resolution</span><p>' + p.dpi + '</p></div>' +
+      '<div><span class="form-label">Color Mode</span><p>' + p.color + '</p></div>' +
+      '<div><span class="form-label">File Format</span><p>' + p.format + '</p></div>' +
+      '<div><span class="form-label">Print Partners</span><p>' + p.partners + '</p></div>' +
+      '<div><span class="form-label">Pricing</span><p>' + p.pricing + '</p></div>' +
+    '</div>' +
+    '<div class="mt-3"><span class="form-label">Mockup Tips</span><p class="text-sm">' + p.mockup + '</p></div>' +
+    '<button class="btn-primary mt-4 gen-prod-desc-btn"><i data-lucide="wand-2" class="w-4 h-4"></i> Generate Product Description</button></div>';
+  reinitIcons();
+  c.querySelector('.gen-prod-desc-btn').addEventListener('click', generateProductDesc);
+}
+
+var PROD_DESCRIPTIONS = {
+  'wall-art': {
+    title: function(pat) { return pat + ' \u00b7 Botanical Line Art Print \u00b7 Printable Wall Art \u00b7 Hand-Drawn Illustration \u00b7 Neutral Earthy Home D\u00e9cor \u00b7 Coastal Cottagecore Art'; },
+    desc: 'This delicate line art print brings the quiet beauty of the natural world into your home. Drawn in the signature McSwegin Studio style \u2014 fine ink lines, generous breathing room, and a soft cream palette \u2014 it\'s the kind of piece that feels like it\'s always been there.',
+    features: ['Instant digital download \u2014 print from home or at a local print shop', 'Designed in a neutral, earthy palette that suits any room', 'Available in multiple standard sizes (4\u00d76, 5\u00d77, 8\u00d710, 11\u00d714)', 'Fine line hand-drawn illustration style, cottagecore botanical aesthetic', 'Pairs beautifully with simple wood or white frames'],
+    sizes: '4\u00d76 \u00b7 5\u00d77 \u00b7 8\u00d710 \u00b7 11\u00d714 \u00b7 16\u00d720', price: '$4\u2013$9 for digital download \u00b7 $18\u2013$45 for printed and shipped'
+  },
+  'tote': {
+    title: function(pat) { return pat + ' \u00b7 Canvas Tote Bag \u00b7 Botanical Hand-Drawn Design \u00b7 Cottagecore Market Bag \u00b7 McSwegin Studio \u00b7 Coastal Aesthetic Tote'; },
+    desc: 'A tote bag that carries more than just your things \u2014 it carries a whole mood. This sturdy canvas tote features McSwegin Studio\'s signature hand-drawn line art, printed with soft, earthy tones on natural canvas. Beautiful enough to show off, practical enough for everyday.',
+    features: ['100% natural canvas, substantial weight (12oz or heavier)', 'Printed with eco-friendly, wash-safe ink', 'Generous 15"\u00d716" size with 20" handles', 'Perfect for farmers markets, bookshops, beach days, and grocery runs', 'Design printed on one side; natural canvas reverse'],
+    sizes: 'One size (15"\u00d716") \u00b7 Optional: small pouch add-on', price: '$22\u2013$38'
+  },
+  'mug': {
+    title: function(pat) { return pat + ' \u00b7 Ceramic Coffee Mug \u00b7 Botanical Line Art \u00b7 Cottagecore Mug \u00b7 Faith-Inspired Drinkware \u00b7 McSwegin Studio'; },
+    desc: 'The best kind of morning begins with a mug that feels like home. This ceramic mug features McSwegin Studio\'s signature hand-drawn botanical illustration \u2014 fine lines, soft tones, gentle detail \u2014 making every cup of coffee or tea feel like a small ceremony.',
+    features: ['11oz and 15oz ceramic mug options', 'Dishwasher and microwave safe', 'Wraparound or centered design placement', 'Sturdy handle, classic shape', 'Ships in protective packaging \u2014 gift-ready'],
+    sizes: '11oz \u00b7 15oz', price: '$18\u2013$28'
+  },
+  'apparel': {
+    title: function(pat) { return pat + ' \u00b7 Botanical Graphic Tee \u00b7 Cottagecore T-Shirt \u00b7 Faith Art Sweatshirt \u00b7 McSwegin Studio \u00b7 Soft Neutral Aesthetic Apparel'; },
+    desc: 'Wear what moves you. This soft, relaxed-fit tee (or sweatshirt) features McSwegin Studio\'s beloved line art, printed in earthy neutrals on a cream or natural base. The kind of piece you reach for on slow mornings, market days, and quiet afternoons.',
+    features: ['Unisex relaxed fit, runs true to size', 'Ultra-soft ring-spun cotton or cotton-poly blend', 'Screen printed or DTG, depending on quantity', 'Available in cream, natural, and sage colorways', 'Pairs with everything \u2014 jeans, linen, overalls'],
+    sizes: 'XS \u00b7 S \u00b7 M \u00b7 L \u00b7 XL \u00b7 2XL', price: '$28\u2013$45'
+  },
+  'tea-towel': {
+    title: function(pat) { return pat + ' \u00b7 Linen Tea Towel \u00b7 Botanical Line Art \u00b7 Cottagecore Kitchen D\u00e9cor \u00b7 McSwegin Studio \u00b7 Hand-Drawn Kitchen Textile'; },
+    desc: 'A tea towel that\'s almost too pretty to use \u2014 but please do. This natural linen tea towel features McSwegin Studio\'s hand-drawn botanical patterns, screen printed in earthy tones that only get more beautiful with washing.',
+    features: ['100% natural linen or linen-cotton blend', 'Approximately 18"\u00d728" size', 'Hemmed edges, hanging loop', 'Screen printed with water-based ink', 'Wonderful as a gift \u2014 pairs with hand soap and a candle'],
+    sizes: '18"\u00d728" standard \u00b7 20"\u00d730" large', price: '$22\u2013$35'
+  },
+  'stationery': {
+    title: function(pat) { return pat + ' \u00b7 Stationery Set \u00b7 Botanical Note Cards \u00b7 Hand-Drawn Design \u00b7 McSwegin Studio \u00b7 Cottagecore Paper Goods'; },
+    desc: 'Beautiful paper goods for beautiful souls. This stationery set features McSwegin Studio\'s signature botanical illustrations, printed on premium cardstock with a soft, matte finish. Perfect for thank you notes, love letters, and just-because messages.',
+    features: ['Set of 8 cards with envelopes', 'Printed on premium 110lb cardstock', 'Soft matte finish, no sheen', 'A7 size (5\u00d77") \u2014 fits standard envelopes', 'Packaged in a kraft paper sleeve \u2014 gift-ready'],
+    sizes: '5\u00d77" cards with A7 envelopes', price: '$14\u2013$22'
+  },
+  'gift-wrap': {
+    title: function(pat) { return pat + ' \u00b7 Gift Wrap Sheets \u00b7 Botanical Pattern \u00b7 Hand-Drawn Wrapping Paper \u00b7 McSwegin Studio'; },
+    desc: 'Wrap your gifts in something as beautiful as what\'s inside. These gift wrap sheets feature a seamless hand-drawn pattern from McSwegin Studio \u2014 delicate lines, soft earthy tones, and that signature cottagecore charm.',
+    features: ['Premium quality paper, crisp fold lines', 'Full seamless pattern coverage', 'Available in flat sheets or rolls', 'Pairs beautifully with twine, dried flowers, or ribbon', 'Recyclable and eco-friendly'],
+    sizes: '20"\u00d730" flat sheets \u00b7 24"\u00d736" large', price: '$8\u2013$14'
+  },
+  'journal': {
+    title: function(pat) { return pat + ' \u00b7 Journal \u00b7 Botanical Cover Design \u00b7 Faith-Inspired Notebook \u00b7 McSwegin Studio'; },
+    desc: 'A journal worth writing in. The cover features McSwegin Studio\'s hand-drawn botanical illustration, designed to inspire quiet reflection, morning pages, and creative notes. Simple, beautiful, and ready for your thoughts.',
+    features: ['Hardcover or softcover options', '6"\u00d79" size \u2014 fits in bags and on nightstands', 'Lined, dot grid, or blank interior pages', 'Lay-flat binding for comfortable writing', 'Cover design by McSwegin Studio'],
+    sizes: '6"\u00d79" standard', price: '$14\u2013$24'
+  },
+  'fabric': {
+    title: function(pat) { return pat + ' \u00b7 Fabric Yardage \u00b7 Botanical Surface Pattern \u00b7 Cottagecore Textile \u00b7 McSwegin Studio'; },
+    desc: 'Bring your sewing and quilting projects to life with McSwegin Studio\'s signature hand-drawn patterns printed on premium fabric. Designed to tile seamlessly, each yard carries a world of botanical beauty.',
+    features: ['Available through Spoonflower in multiple fabric types', 'Seamless repeat pattern tiles perfectly', 'Multiple fabric bases: cotton, linen, canvas, knit', 'Colorsafe and machine washable', 'Perfect for quilting, apparel, home d\u00e9cor'],
+    sizes: 'Fat quarter \u00b7 Yard \u00b7 2+ yards', price: '$26\u2013$40 per yard'
+  },
+  'sticker': {
+    title: function(pat) { return pat + ' \u00b7 Sticker Sheet \u00b7 Botanical Die-Cut Stickers \u00b7 McSwegin Studio \u00b7 Planner Stickers'; },
+    desc: 'Tiny art for your everyday. These die-cut stickers feature McSwegin Studio\'s beloved botanical motifs \u2014 perfect for journals, planners, laptops, water bottles, and every surface that needs a touch of quiet beauty.',
+    features: ['High-quality vinyl, waterproof and durable', 'Die-cut or kiss-cut options', '4"\u00d76" sheet with multiple designs', 'Matte or glossy finish available', 'Perfect for gifts and stocking stuffers'],
+    sizes: '4"\u00d76" sheet \u00b7 Individual 1\u20133" stickers', price: '$4\u2013$8'
+  },
+  'digital': {
+    title: function(pat) { return pat + ' \u00b7 Digital Download \u00b7 Printable Art \u00b7 Botanical Line Art \u00b7 McSwegin Studio \u00b7 Instant Download'; },
+    desc: 'Art that arrives the moment you need it. This digital download gives you high-resolution files in multiple sizes so you can print at home, at a local shop, or through an online print service. No waiting, no shipping \u2014 just beautiful art, right now.',
+    features: ['Instant download \u2014 files available immediately after purchase', 'Includes multiple sizes: 5\u00d77, 8\u00d710, 11\u00d714, A4', 'High-resolution 300dpi files in JPG and PDF', 'Print on matte paper or cardstock for best results', 'No physical item shipped \u2014 pure digital'],
+    sizes: '5\u00d77 \u00b7 8\u00d710 \u00b7 11\u00d714 \u00b7 A4', price: '$3\u2013$12 (pure margin)'
+  },
+  'pillow': {
+    title: function(pat) { return pat + ' \u00b7 Throw Pillow Cover \u00b7 Botanical Line Art \u00b7 Cottagecore Home D\u00e9cor \u00b7 McSwegin Studio'; },
+    desc: 'The finishing touch your sofa has been waiting for. This throw pillow cover features McSwegin Studio\'s hand-drawn botanical pattern, printed on soft fabric in earthy, neutral tones. Cozy, beautiful, and perfectly on-brand.',
+    features: ['18"\u00d718" or 20"\u00d720" pillow cover (insert not included)', 'Hidden zipper closure', 'Printed on soft, durable poly-linen blend', 'Machine washable', 'Design printed on front; solid neutral reverse'],
+    sizes: '18"\u00d718" \u00b7 20"\u00d720"', price: '$22\u2013$34'
+  }
+};
+
+async function generateProductDesc() {
+  var patternName = document.getElementById('prod-pattern-ms01').value || 'McSwegin Studio Pattern';
+  var p = PRODUCT_TYPES.find(function(pt) { return pt.id === selectedProductType; });
+  if (!p) return;
+  var output = document.getElementById('prod-output-ms01');
+  showSpinner(output);
+
+  await sleep(1200);
+
+  var spec = PROD_DESCRIPTIONS[selectedProductType] || PROD_DESCRIPTIONS['wall-art'];
+  var title = spec.title(patternName);
+
+  output.innerHTML = '<div class="gen-output fade-in-up">' +
+    '<div class="flex items-center justify-between mb-4 flex-wrap gap-2">' +
+      '<h3 class="font-heading text-lg font-semibold">Product Description</h3>' +
+      '<button class="btn-secondary copy-prod-all-btn"><i data-lucide="copy" class="w-3 h-3"></i> Copy All</button>' +
+    '</div>' +
+    '<div class="generated-output">' +
+      '<div class="output-block"><div class="output-label">\u2726 Product Title (Etsy-Optimized)</div><p class="text-sm font-medium">' + title + '</p><button class="copy-btn copy-prod-title-btn">Copy Title</button></div>' +
+      '<div class="output-block"><div class="output-label">\u2726 Marketing Description</div><p class="text-sm" style="line-height:1.8;">' + spec.desc + '</p><button class="copy-btn copy-prod-desc-btn">Copy</button></div>' +
+      '<div class="output-block"><div class="output-label">\u2726 Feature Bullets</div><ul class="text-sm space-y-1">' + spec.features.map(function(f) { return '<li class="flex gap-2"><span class="text-sage">\u2726</span> ' + f + '</li>'; }).join('') + '</ul><button class="copy-btn copy-prod-features-btn">Copy Bullets</button></div>' +
+      '<div class="output-block"><div class="output-label">\u2726 Size / Variant Options</div><p class="text-sm">' + spec.sizes + '</p></div>' +
+      '<div class="output-block"><div class="output-label">\u2726 Suggested Retail Price Range</div><p class="text-sm font-medium" style="color:var(--gold);">' + spec.price + '</p></div>' +
+    '</div></div>';
+
+  var allProdText = '\u2726 TITLE\n' + title + '\n\n\u2726 DESCRIPTION\n' + spec.desc + '\n\n\u2726 FEATURES\n\u2022 ' + spec.features.join('\n\u2022 ') + '\n\n\u2726 SIZES\n' + spec.sizes + '\n\n\u2726 PRICE\n' + spec.price;
+
+  reinitIcons();
+
+  output.querySelector('.copy-prod-all-btn').addEventListener('click', function() { copyText(allProdText); });
+  output.querySelector('.copy-prod-title-btn').addEventListener('click', function() { copyFromBtn(this, title); });
+  output.querySelector('.copy-prod-desc-btn').addEventListener('click', function() { copyFromBtn(this, spec.desc); });
+  output.querySelector('.copy-prod-features-btn').addEventListener('click', function() { copyFromBtn(this, '\u2022 ' + spec.features.join('\n\u2022 ')); });
+
+  // Show checklist
+  var cl = document.getElementById('prod-checklist-ms01');
+  cl.innerHTML = '<div class="gen-output fade-in-up"><h3 class="font-heading text-lg font-semibold mb-3">Production Checklist</h3>' +
+    '<div class="checklist-item"><input type="checkbox" id="chk1-ms01"><label for="chk1-ms01">Art file prepared</label></div>' +
+    '<div class="checklist-item"><input type="checkbox" id="chk2-ms01"><label for="chk2-ms01">Mockup photography done</label></div>' +
+    '<div class="checklist-item"><input type="checkbox" id="chk3-ms01"><label for="chk3-ms01">Listing drafted</label></div>' +
+    '<div class="checklist-item"><input type="checkbox" id="chk4-ms01"><label for="chk4-ms01">Published</label></div>' +
+    '<div class="checklist-item"><input type="checkbox" id="chk5-ms01"><label for="chk5-ms01">Social post created</label></div></div>';
+
+  output.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ========== ETSY GENERATOR ==========
+function initEtsyForm() {
+  var typeSelect = document.getElementById('etsy-type-ms01');
+  typeSelect.innerHTML = '<option value="">Select...</option>' + PRODUCT_TYPES.map(function(p) { return '<option value="' + p.name + '">' + p.emoji + ' ' + p.name + '</option>'; }).join('');
+  var inspoSelect = document.getElementById('etsy-inspo-ms01');
+  CATEGORIES.forEach(function(cat) { var o = document.createElement('option'); o.value = cat.name; o.textContent = cat.emoji + ' ' + cat.name; inspoSelect.appendChild(o); });
+}
+initEtsyForm();
+
+function renderSavedListings() {
+  var c = document.getElementById('saved-listings-ms01');
+  var statusColors = { Draft: 'bg-sand-light text-charcoal-light', Ready: 'bg-sage-light text-charcoal', Published: 'bg-sage text-white' };
+  c.innerHTML = savedListings.map(function(l) {
+    return '<div class="bg-warm-white rounded-xl p-4 border border-sand-light/50 card-hover">' +
+      '<h4 class="font-heading text-base font-semibold">' + l.name + '</h4>' +
+      '<p class="text-xs text-charcoal-light">' + l.type + '</p>' +
+      '<span class="badge ' + (statusColors[l.status] || 'bg-cream-dark text-charcoal-light') + ' mt-2">' + l.status + '</span></div>';
+  }).join('');
+}
+renderSavedListings();
+
+document.getElementById('gen-etsy-ms01').addEventListener('click', async function() {
+  var name = document.getElementById('etsy-name-ms01').value || 'Botanical Line Art Print';
+  var type = document.getElementById('etsy-type-ms01').value || 'Wall Art Print';
+  var inspo = document.getElementById('etsy-inspo-ms01').value || 'Wildflowers';
+  var features = document.getElementById('etsy-features-ms01').value || 'hand-drawn line art, neutral palette, cottagecore style';
+  var target = document.getElementById('etsy-target-ms01').value || 'a woman who loves quiet, beautiful things';
+  var price = document.getElementById('etsy-price-ms01').value || '28';
+  var materials = document.getElementById('etsy-materials-ms01').value || 'high-quality materials';
+  var sizes = document.getElementById('etsy-sizes-ms01').value || 'Multiple sizes available';
+  var shipping = document.getElementById('etsy-shipping-ms01').value;
+
+  var output = document.getElementById('etsy-output-ms01');
+  showSpinner(output);
+  var btn = this;
+  btn.disabled = true;
+
+  await sleep(1500);
+
+  var isDigital = shipping.toLowerCase().indexOf('digital') !== -1 || type.toLowerCase().indexOf('digital') !== -1;
+
+  var titleRaw = name + ' \u00b7 Hand-Drawn ' + inspo + ' ' + type + ' \u00b7 Botanical Line Art \u00b7 Cottagecore ' + type + ' \u00b7 McSwegin Studio \u00b7 Neutral Earthy Home D\u00e9cor';
+  var title = titleRaw.substring(0, 140);
+
+  var openingHook = 'For the one who decorates slowly, intentionally \u2014 who chooses each piece because it makes her home feel like a breath of fresh air. This is for ' + target + '.';
+
+  var whatItIs = 'The ' + name + ' is a hand-drawn ' + type.toLowerCase() + ' from McSwegin Studio, featuring delicate ' + inspo.toLowerCase() + '-inspired line art in a soft, neutral earthy palette. ' + (isDigital ? 'This listing is for an INSTANT DIGITAL DOWNLOAD \u2014 no waiting, no shipping. Download, print, and enjoy today.' : 'Each piece is made with care and ships within the timeframe noted below.');
+
+  var brandStory = 'McSwegin Studio is a small creative studio rooted in faith, coastal beauty, and the quiet art of making. Every pattern begins as a hand-drawn illustration \u2014 fine ink lines, generous white space, the kind of detail you notice slowly. This design is part of a thoughtfully curated collection inspired by ' + inspo.toLowerCase() + ', the natural world, and a deep love for peaceful, beautiful spaces.';
+
+  var featureLines = features.split('\n').filter(function(f) { return f.trim(); });
+  if (featureLines.length === 0) featureLines = features.split(',').map(function(f) { return f.trim(); });
+  var detailsSection = 'DETAILS\n\u2022 ' + featureLines.join('\n\u2022 ') + '\n\u2022 Materials: ' + materials + '\n\u2022 Available sizes: ' + sizes + (isDigital ? '\n\u2022 Files included: high-resolution JPG and PDF\n\u2022 Recommended: print on matte photo paper or cardstock for best results' : '\n\u2022 Carefully packaged to arrive safely');
+
+  var shippingSection = isDigital
+    ? 'DIGITAL DOWNLOAD\nThis is an instant digital download. No physical item will be shipped. Files are available immediately after purchase in your Etsy Downloads. Print locally at a copy shop, home printer, or online print service (Canva Print, Mpix, Artifact Uprising).'
+    : 'SHIPPING\n' + shipping + '. Items are carefully packaged and shipped with tracking. Please double-check your shipping address before purchase.';
+
+  var shopNote = 'Thank you for supporting a small, faith-inspired creative studio. Every purchase means so much \u2014 it allows me to keep creating things that I hope bring a little quiet beauty into your everyday life. With gratitude, Megan \u00b7 McSwegin Studio';
+
+  var tags = ['botanical line art', 'cottagecore wall art', 'neutral home decor', inspo.toLowerCase() + ' art print', 'hand drawn illustration', 'faith inspired art', 'coastal aesthetic print', 'printable wall art', 'earthy tone decor', 'elegant home print', 'minimal botanical art', 'farmhouse wall decor', 'mcsweginstudio'];
+
+  var priceNum = parseFloat(price) || 28;
+  var pricingNote;
+  if (priceNum < 15 && !isDigital) {
+    pricingNote = '\u26a0\ufe0f At $' + priceNum + ', your margin may be tight for a physical product. Consider raising to $' + (priceNum + 8) + '\u2013$' + (priceNum + 15) + ' to cover materials, time, and shipping supplies.';
+  } else if (priceNum >= 15 && priceNum <= 55) {
+    pricingNote = '\u2713 $' + priceNum + ' is well-positioned for this product type in the handmade/boutique Etsy market.';
+  } else {
+    pricingNote = '\u2713 Premium pricing \u2014 make sure your photography and listing copy communicate the quality clearly.';
+  }
+
+  var fullDesc = openingHook + '\n\n' + whatItIs + '\n\n' + brandStory + '\n\n' + detailsSection + '\n\n' + shippingSection + '\n\n' + shopNote;
+
+  output.innerHTML = '<div class="gen-output fade-in-up">' +
+    '<div class="flex items-center justify-between mb-4 flex-wrap gap-2">' +
+      '<h3 class="font-heading text-lg font-semibold">Complete Etsy Listing</h3>' +
+      '<div class="flex gap-2">' +
+        '<button class="btn-secondary copy-etsy-all-btn"><i data-lucide="copy" class="w-3 h-3"></i> Copy All</button>' +
+        '<button class="btn-primary text-xs save-etsy-btn"><i data-lucide="bookmark" class="w-3 h-3"></i> Save Listing</button>' +
+      '</div>' +
+    '</div>' +
+    '<div class="generated-output">' +
+      '<div class="output-block" style="border-left:3px solid var(--gold);"><div class="output-label">\u2726 Listing Title (' + title.length + '/140 characters)</div><p class="text-sm font-medium">' + title + '</p><button class="copy-btn copy-etsy-title-btn">Copy Title</button></div>' +
+      '<div class="output-block"><div class="output-label">\u2726 Opening Hook</div><p class="text-sm italic" style="line-height:1.8;">' + openingHook + '</p><button class="copy-btn copy-etsy-hook-btn">Copy</button></div>' +
+      '<div class="output-block"><div class="output-label">\u2726 What It Is</div><p class="text-sm" style="line-height:1.8;">' + whatItIs + '</p><button class="copy-btn copy-etsy-what-btn">Copy</button></div>' +
+      '<div class="output-block"><div class="output-label">\u2726 Brand Story</div><p class="text-sm" style="line-height:1.8;">' + brandStory + '</p><button class="copy-btn copy-etsy-brand-btn">Copy</button></div>' +
+      '<div class="output-block"><div class="output-label">\u2726 Details Section</div><pre style="white-space:pre-wrap;font-family:inherit;font-size:14px;line-height:1.7;">' + detailsSection + '</pre><button class="copy-btn copy-etsy-details-btn">Copy</button></div>' +
+      '<div class="output-block"><div class="output-label">\u2726 Shipping Section</div><pre style="white-space:pre-wrap;font-family:inherit;font-size:14px;line-height:1.7;">' + shippingSection + '</pre><button class="copy-btn copy-etsy-ship-btn">Copy</button></div>' +
+      '<div class="output-block"><div class="output-label">\u2726 Shop Note</div><p class="text-sm italic" style="line-height:1.8;">' + shopNote + '</p><button class="copy-btn copy-etsy-note-btn">Copy</button></div>' +
+      '<div class="output-block"><div class="output-label">\u2726 Full Description (ready to paste)</div><button class="copy-btn copy-etsy-full-btn" style="margin-bottom:8px;">Copy Full Description</button></div>' +
+      '<div class="output-block"><div class="output-label">\u2726 Etsy Tags (13)</div><div class="gen-tag-row">' + tags.map(function(t) { return '<span class="gen-tag etsy-tag-chip">' + t + '</span>'; }).join('') + '</div><button class="copy-btn copy-etsy-tags-btn" style="margin-top:8px;">Copy All Tags</button></div>' +
+      '<div class="output-block"><div class="output-label">\u2726 Pricing Note</div><p class="text-sm">' + pricingNote + '</p></div>' +
+    '</div></div>';
+
+  reinitIcons();
+
+  output.querySelector('.copy-etsy-all-btn').addEventListener('click', function() { copyText(fullDesc + '\n\n\u2726 TAGS\n' + tags.join(', ')); });
+  output.querySelector('.copy-etsy-title-btn').addEventListener('click', function() { copyFromBtn(this, title); });
+  output.querySelector('.copy-etsy-hook-btn').addEventListener('click', function() { copyFromBtn(this, openingHook); });
+  output.querySelector('.copy-etsy-what-btn').addEventListener('click', function() { copyFromBtn(this, whatItIs); });
+  output.querySelector('.copy-etsy-brand-btn').addEventListener('click', function() { copyFromBtn(this, brandStory); });
+  output.querySelector('.copy-etsy-details-btn').addEventListener('click', function() { copyFromBtn(this, detailsSection); });
+  output.querySelector('.copy-etsy-ship-btn').addEventListener('click', function() { copyFromBtn(this, shippingSection); });
+  output.querySelector('.copy-etsy-note-btn').addEventListener('click', function() { copyFromBtn(this, shopNote); });
+  output.querySelector('.copy-etsy-full-btn').addEventListener('click', function() { copyFromBtn(this, fullDesc); });
+  output.querySelector('.copy-etsy-tags-btn').addEventListener('click', function() { copyFromBtn(this, tags.join(', ')); });
+
+  output.querySelectorAll('.etsy-tag-chip').forEach(function(chip) {
+    chip.addEventListener('click', function() {
+      copyText(chip.textContent);
+      chip.style.background = 'var(--sage-light)';
+      setTimeout(function() { chip.style.background = ''; }, 1500);
+    });
+  });
+
+  output.querySelector('.save-etsy-btn').addEventListener('click', function() {
+    savedListings.unshift({ name: name, type: type || 'Art Print', status: 'Draft' });
+    savePersist(); renderSavedListings(); showToast('Listing saved \u2726');
+  });
+
+  btn.disabled = false;
+  output.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+// ========== SOCIAL STUDIO ==========
+function initSocialStudio() {
+  var pc = document.getElementById('social-platforms-ms01');
+  pc.innerHTML = SOCIAL_PLATFORMS.map(function(p) { return '<button class="category-pill social-plat-pill' + (p === 'Instagram' ? ' active-pill' : '') + '" data-plat="' + p + '">' + p + '</button>'; }).join('');
+  pc.querySelectorAll('.social-plat-pill').forEach(function(btn) {
+    btn.addEventListener('click', function() { pc.querySelectorAll('.social-plat-pill').forEach(function(b) { b.classList.remove('active-pill'); }); btn.classList.add('active-pill'); selectedPlatform = btn.dataset.plat; });
+  });
+
+  var tc = document.getElementById('post-templates-ms01');
+  tc.innerHTML = POST_TEMPLATES.map(function(t, i) {
+    return '<div class="template-card" data-idx="' + i + '">' +
+      '<div class="flex items-center gap-2 mb-1"><i data-lucide="' + t.icon + '" class="w-4 h-4 text-sage"></i><span class="font-heading text-sm font-semibold">' + t.title + '</span></div>' +
+      '<p class="text-xs text-charcoal-light italic">' + t.preview + '</p></div>';
+  }).join('');
+  tc.querySelectorAll('.template-card').forEach(function(card) {
+    card.addEventListener('click', function() {
+      var tmpl = POST_TEMPLATES[parseInt(card.dataset.idx)];
+      document.getElementById('social-ref-ms01').value = tmpl.title;
+      showToast('Template loaded \u2014 click Generate!');
+    });
+  });
+
+  var hb = document.getElementById('hashtag-bank-ms01');
+  hb.innerHTML = Object.entries(HASHTAG_BANK).map(function(entry) {
+    return '<div class="mb-3"><p class="form-label mb-1">' + entry[0] + '</p><div class="flex flex-wrap gap-1">' + entry[1].map(function(tag) { return '<span class="hashtag-chip ht-copy-chip">' + tag + '</span>'; }).join('') + '</div></div>';
+  }).join('');
+  hb.querySelectorAll('.ht-copy-chip').forEach(function(chip) {
+    chip.addEventListener('click', function() { copyText(chip.textContent); });
+  });
+
+  reinitIcons();
+}
+initSocialStudio();
+
+// Social post template data
+var SOCIAL_SCRIPTURES = {
+  'New Product Launch': 'She makes linen garments and sells them. \u2014 Proverbs 31:24',
+  'Collection Reveal': 'To everything there is a season, a time for every purpose. \u2014 Ecclesiastes 3:1',
+  'Behind the Scenes': 'Whatever you do, work at it with all your heart. \u2014 Colossians 3:23',
+  'Sneak Peek': 'For everything there is a season. \u2014 Ecclesiastes 3:1',
+  'Scripture + Art': 'Your word is a lamp to my feet and a light to my path. \u2014 Psalm 119:105',
+  'Process Video': 'Commit your work to the Lord, and your plans will succeed. \u2014 Proverbs 16:3',
+  'Personal Story': 'She is clothed with strength and dignity. \u2014 Proverbs 31:25',
+  'Seasonal Post': 'He has made everything beautiful in its time. \u2014 Ecclesiastes 3:11',
+  'Sale or Promotion': 'Give, and it will be given to you. \u2014 Luke 6:38',
+  'Restock': 'She watches over the affairs of her household. \u2014 Proverbs 31:27',
+  'Gratitude Post': 'Give thanks in all circumstances. \u2014 1 Thessalonians 5:18',
+  'Morning Post': 'His mercies are new every morning. \u2014 Lamentations 3:23'
+};
+
+var SOCIAL_CAPTIONS = {
+  'New Product Launch': {
+    quiet: function(ref) { return 'Something quiet and new has arrived in the shop.\n\nThis ' + ref + ' \u2014 drawn slowly, with intention \u2014 is now available. It\'s the kind of piece I made for the still moments. For the windowsill, the reading nook, the space that needs one gentle beautiful thing.\n\nShop is linked in bio. \u2726'; },
+    warm: function(ref) { return 'New in the shop! \ud83c\udf3f\n\nI\'m so excited to share the ' + ref + ' with you \u2014 this one took a while and I\'m really proud of how it came out. If you\'ve been here for a while, you know how much these designs mean to me.\n\nLink in bio \u2014 I hope it finds the right home! \ud83e\udd0d'; },
+    bright: function(ref) { return 'NEW DROP \u2728 The ' + ref + ' is officially in the shop and it\'s everything!\n\nSoft lines. Neutral palette. The kind of art that makes a room feel like a breath of fresh air. Available now \u2014 link in bio before it\'s gone! \ud83d\udecd\ufe0f'; }
+  },
+  'Behind the Scenes': {
+    quiet: function(ref) { return 'Ink on paper. A cup of tea going cold. The sound of rain.\n\nThis is where the ' + ref + ' begins \u2014 long before it becomes a pattern, it\'s just a hand moving across a page, trying to get something true down.\n\nThank you for following along. \u2726'; },
+    warm: function(ref) { return 'Behind the scenes of the ' + ref + '! \ud83c\udf3f\n\nI don\'t share this enough but the process is honestly my favorite part. The sketching, the happy accidents, the moment a line finally goes where you wanted it to. So grateful to do this work.'; },
+    bright: function(ref) { return 'POV: You\'re at my studio desk watching the ' + ref + ' come to life \ud83c\udfa8\u2728\n\nSwipe to see the process! From sketch \u2192 ink \u2192 final pattern. I love sharing this with you. More coming soon!'; }
+  },
+  'Collection Reveal': {
+    quiet: function(ref) { return 'Introducing ' + ref + '.\n\nA collection drawn from stillness \u2014 from long mornings and slow walks and the particular light of this season. Each piece is a small invitation to notice what\'s beautiful and quiet in the everyday.\n\nAvailable now in the shop. \u2726'; },
+    warm: function(ref) { return 'The ' + ref + ' collection is here and I can\'t believe I finally get to share it! \ud83c\udf3f\n\nThis one has been months in the making \u2014 inspired by the things I love most: quiet mornings, the natural world, and faith that holds you steady. I hope you love it as much as I do.'; },
+    bright: function(ref) { return 'IT\'S HERE. The ' + ref + ' collection has officially dropped \u2728\ud83d\udecd\ufe0f\n\nSo many beautiful pieces in this one \u2014 wall art, totes, mugs, and more. All in that soft, earthy McSwegin palette you love. Shop the collection \u2014 link in bio!'; }
+  },
+  'Scripture + Art': {
+    quiet: function(ref) { return 'This verse was on my heart when I designed the ' + ref + '. Sometimes the most honest thing I can make is something that just holds a word still for a moment.\n\nAvailable in the shop. \u2726'; },
+    warm: function(ref) { return 'This design was born from a verse I keep coming back to. \ud83e\udd0d\n\nThe ' + ref + ' is my way of putting that truth somewhere beautiful. Link in bio.'; },
+    bright: function(ref) { return 'Faith + art = my whole heart \u2728\n\nDesigned this ' + ref + ' with this verse on my heart. Available now \u2014 link in bio! \ud83d\udecd\ufe0f'; }
+  },
+  'Seasonal Post': {
+    quiet: function(ref) { return 'The light is changing. There\'s something in the air that feels like a turning.\n\nThe ' + ref + ' was made for this season \u2014 to sit in the window, on the table, in the spaces where we gather and slow down.\n\nShop is open. \u2726'; },
+    warm: function(ref) { return 'It\'s officially the season for the ' + ref + ' and I am HERE for it \ud83c\udf3f\ud83c\udf42\n\nThere\'s something so special about making art that fits a moment in time. I hope this finds its way into your home this season. Link in bio!'; },
+    bright: function(ref) { return 'SEASONAL DROP \ud83c\udf42\u2728 The ' + ref + ' is giving all the cozy vibes right now!\n\nPerfect timing for gifting, decorating, and celebrating the season. Link in bio \u2014 these go fast! \ud83d\udecd\ufe0f'; }
+  },
+  'Sneak Peek': {
+    quiet: function(ref) { return 'A little whisper of what\'s coming...\n\nThe ' + ref + ' is almost ready. I\'m not sharing everything yet \u2014 just enough to let you wonder. Stay close. \u2726'; },
+    warm: function(ref) { return 'Sneak peek! \ud83c\udf3f Something new is almost ready to share \u2014 the ' + ref + ' is in its final stages and I can\'t wait for you to see it.\n\nStay tuned!'; },
+    bright: function(ref) { return 'FIRST LOOK \ud83d\udc40\u2728 Can you tell what this is going to be?\n\nThe ' + ref + ' drops soon and I\'m SO excited. Turn on post notifications so you don\'t miss it!'; }
+  },
+  'Sale or Promotion': {
+    quiet: function(ref) { return 'A quiet thank-you to this community \u2014 a small sale on the ' + ref + ' this week. Because making beautiful things means nothing if they don\'t find their way to people who love them.\n\nShop link in bio. \u2726'; },
+    warm: function(ref) { return 'SALE TIME! \ud83c\udf3f A little something special for you \u2014 the ' + ref + ' is marked down this week! I love being able to share these designs at a friendlier price point. Link in bio \ud83e\udd0d'; },
+    bright: function(ref) { return '\ud83c\udf89 SALE ALERT! The ' + ref + ' is on SALE and you don\'t want to miss this!\n\nLimited time only \u2014 grab yours while it\'s marked down! Link in bio \ud83d\udecd\ufe0f'; }
+  },
+  'Process Video': {
+    quiet: function(ref) { return 'Pen to paper. The slow, quiet work of making something from nothing.\n\nHere\'s a glimpse of the ' + ref + ' in progress \u2014 from first sketch to final ink. \u2726'; },
+    warm: function(ref) { return 'Process reel! \ud83c\udfa8 Sharing how the ' + ref + ' came to life \u2014 from my messy sketchbook to the finished design. I love showing this side of the studio.'; },
+    bright: function(ref) { return 'WATCH ME DRAW \u2728 The ' + ref + ' from start to finish!\n\nHit save for inspo and let me know in the comments what you want to see next! \ud83c\udf3f'; }
+  },
+  'Personal Story': {
+    quiet: function(ref) { return 'I started this studio from a small table by the window, with a cup of coffee and a prayer. The ' + ref + ' reminds me of those early days \u2014 when all I had was a pen and a dream.\n\nThank you for being here. \u2726'; },
+    warm: function(ref) { return 'Can I be real for a minute? \ud83e\udd0d This work means the world to me. The ' + ref + ' represents something deeper \u2014 a reminder that beauty grows in quiet places. So grateful for every one of you.'; },
+    bright: function(ref) { return 'Story time! \u2728 The ' + ref + ' has a special place in my heart. Started as a rough sketch on a napkin (true story!) and grew into something I\'m so proud of. Thanks for being part of this journey!'; }
+  },
+  'Restock': {
+    quiet: function(ref) { return 'Quietly restocked \u2014 the ' + ref + ' is back in the shop. For those who\'ve been waiting, it\'s yours. \u2726'; },
+    warm: function(ref) { return 'IT\'S BACK! \ud83c\udf3f The ' + ref + ' has been restocked! This one sells out every time so don\'t wait. Link in bio \ud83e\udd0d'; },
+    bright: function(ref) { return 'RESTOCK ALERT \ud83d\udea8\u2728 The ' + ref + ' is BACK and ready to ship! Last time it sold out in 48 hours \u2014 grab yours now! Link in bio \ud83d\udecd\ufe0f'; }
+  }
+};
+
+var SOCIAL_PHOTO_DIRECTIONS = {
+  'New Product Launch': 'Flat lay on natural linen or cream paper. Product as hero in center. Add: a sprig of dried flowers, a coffee cup (off to one side), soft natural side lighting. Shoot near a window. Avoid harsh shadows.',
+  'Behind the Scenes': 'Studio desk from above: sketchbook open, ink pens scattered naturally, hand in frame mid-drawing. Warm light (golden hour or lamp). A mug of tea in the upper corner adds warmth.',
+  'Collection Reveal': 'Multiple pieces arranged together \u2014 gallery-wall style leaning against a white or cream wall. Add a few props at the base: dried botanicals, a small candle, a worn book. Soft, even light.',
+  'Scripture + Art': 'Close crop on the art piece itself \u2014 let the design fill most of the frame. Very clean, minimal styling. Consider shooting on a wood surface or linen napkin. Let the art speak.',
+  'Seasonal Post': 'Seasonal styling: incorporate seasonal elements (autumn leaves, spring blooms, evergreen sprigs) alongside the product. Keep the palette warm and consistent with the McSwegin brand.',
+  'Sneak Peek': 'Partial crop \u2014 show only a corner or edge of the design. Use shallow depth of field. Create mystery and anticipation. Soft, warm lighting.',
+  'Sale or Promotion': 'Clean product photo on neutral background. Overlay sale details in post-processing using Canva or similar. Keep it on-brand \u2014 no neon sale graphics.',
+  'Process Video': 'Overhead or 45-degree angle of your drawing surface. Clean desk, good lighting, steady camera (use a tripod or phone mount). Record in time-lapse.',
+  'Personal Story': 'A candid, genuine photo \u2014 you at your desk, holding a product, or a personal moment. Natural light, authentic feel. No heavy editing.',
+  'Restock': 'Products stacked or arranged, ready to ship. Packaging visible. Create a sense of abundance and care.'
+};
+
+var SOCIAL_BEST_TIMES = {
+  'Instagram': 'Best times: Tuesday\u2013Friday, 8\u20139am or 6\u20138pm EST',
+  'Pinterest': 'Best times: Saturday and Sunday evenings, 8\u201311pm EST (Pinterest is evergreen \u2014 timing matters less)',
+  'Facebook': 'Best times: Wednesday\u2013Thursday, 1\u20134pm EST',
+  'TikTok': 'Best times: Tuesday\u2013Thursday, 7\u20139am or 7\u20139pm EST',
+  'All at once': 'Post to Instagram first (peak engagement), then Pinterest and Facebook within 30 minutes, TikTok in the evening'
+};
+
+document.getElementById('gen-social-ms01').addEventListener('click', async function() {
+  var topic = document.getElementById('social-topic-ms01').value;
+  var ref = document.getElementById('social-ref-ms01').value || 'new botanical print';
+  var toneVal = parseInt(document.getElementById('social-tone-ms01').value);
+  var includeScripture = document.getElementById('social-scripture-ms01').checked;
+  var includeCTA = document.getElementById('social-cta-ms01').checked;
+  var includeHashtags = document.getElementById('social-hashtags-ms01').checked;
+
+  var output = document.getElementById('social-output-ms01');
+  showSpinner(output);
+  var btn = this;
+  btn.disabled = true;
+
+  await sleep(1200);
+
+  var tones = ['quiet & poetic', 'warm & personal', 'bright & inviting'];
+  var tone = tones[toneVal] || 'warm & personal';
+  var toneKey = toneVal === 0 ? 'quiet' : toneVal === 2 ? 'bright' : 'warm';
+
+  var captionTemplates = SOCIAL_CAPTIONS[topic] || SOCIAL_CAPTIONS['New Product Launch'];
+  var captionFn = captionTemplates[toneKey] || captionTemplates['warm'];
+  var caption = captionFn(ref);
+
+  if (includeScripture) {
+    var scripture = SOCIAL_SCRIPTURES[topic] || SOCIAL_SCRIPTURES['New Product Launch'];
+    caption += '\n\n\u201c' + scripture + '\u201d';
+  }
+
+  var ctas = {
+    'Instagram': '\u2726 Shop linked in bio',
+    'Pinterest': '\u2726 Save this pin for later',
+    'Facebook': '\u2726 Shop link in the comments below',
+    'TikTok': '\u2726 Link in bio to shop',
+    'All at once': '\u2726 Shop linked in bio'
+  };
+  if (includeCTA) caption += '\n\n' + (ctas[selectedPlatform] || ctas['Instagram']);
+
+  var hashtags = '#McSweginStudio #HandmadeByMegan #SurfacePatternDesign #FaithBasedArt #CottageCore #CoastalStyle #HandmadeGifts #EtsyShop #ArtisanMade #PaperGoods #PrintableArt #FaithAndArt #ScriptureArt #ChristianDesign #NeutralAesthetic #EarthyTones #MinimalistArt #SoftAesthetic #BotanicalArt #LineArt #CottageAesthetic #SmallShopSupport #ShopHandmade #HandDrawnArt #FaithInspired';
+
+  var photoDirection = SOCIAL_PHOTO_DIRECTIONS[topic] || SOCIAL_PHOTO_DIRECTIONS['New Product Launch'];
+  var bestTime = SOCIAL_BEST_TIMES[selectedPlatform] || SOCIAL_BEST_TIMES['Instagram'];
+  var altText = 'Hand-drawn ' + ref + ' by McSwegin Studio. Fine line botanical illustration in soft neutral earthy tones on cream background. Cottagecore and faith-inspired design.';
+
+  output.innerHTML = '<div class="gen-output fade-in-up">' +
+    '<div class="flex items-center justify-between mb-4 flex-wrap gap-2">' +
+      '<h3 class="font-heading text-lg font-semibold">Social Post \u2014 ' + selectedPlatform + '</h3>' +
+      '<button class="btn-secondary copy-social-all-btn"><i data-lucide="copy" class="w-3 h-3"></i> Copy All</button>' +
+    '</div>' +
+    '<div class="flex gap-2 mb-3 flex-wrap">' +
+      '<span class="badge bg-sage-light text-charcoal">' + topic + '</span>' +
+      '<span class="badge bg-dusty-rose-light text-charcoal-light">' + tone + '</span>' +
+    '</div>' +
+    '<div class="generated-output">' +
+      '<div class="output-block" style="border-left:3px solid var(--blue-gray);">' +
+        '<div class="output-label">\u2726 ' + selectedPlatform + ' Caption (' + tone + ')</div>' +
+        '<pre style="white-space:pre-wrap;font-family:inherit;line-height:1.8;font-size:14px;">' + caption + '</pre>' +
+        '<button class="copy-btn copy-social-caption-btn">Copy Caption</button>' +
+      '</div>' +
+      (includeHashtags ? '<div class="output-block"><div class="output-label">\u2726 Hashtags</div><p class="text-sm" style="line-height:1.9;">' + hashtags + '</p><button class="copy-btn copy-social-hashtags-btn">Copy Hashtags</button></div>' : '') +
+      '<div class="output-block"><div class="output-label">\u2726 Photo / Visual Direction</div><p class="text-sm" style="line-height:1.8;">' + photoDirection + '</p></div>' +
+      '<div class="output-block"><div class="output-label">\u2726 Best Time to Post</div><p class="text-sm">' + bestTime + '</p></div>' +
+      '<div class="output-block"><div class="output-label">\u2726 Alt Text (accessibility)</div><p class="text-sm" style="font-size:13px;">' + altText + '</p><button class="copy-btn copy-social-alt-btn">Copy Alt Text</button></div>' +
+    '</div></div>';
+
+  var allSocialText = '\u2726 CAPTION\n' + caption + (includeHashtags ? '\n\n\u2726 HASHTAGS\n' + hashtags : '') + '\n\n\u2726 PHOTO DIRECTION\n' + photoDirection + '\n\n\u2726 BEST TIME\n' + bestTime + '\n\n\u2726 ALT TEXT\n' + altText;
+
+  reinitIcons();
+
+  output.querySelector('.copy-social-all-btn').addEventListener('click', function() { copyText(allSocialText); });
+  output.querySelector('.copy-social-caption-btn').addEventListener('click', function() { copyFromBtn(this, caption); });
+  if (includeHashtags) {
+    output.querySelector('.copy-social-hashtags-btn').addEventListener('click', function() { copyFromBtn(this, hashtags); });
+  }
+  output.querySelector('.copy-social-alt-btn').addEventListener('click', function() { copyFromBtn(this, altText); });
+
+  btn.disabled = false;
+  output.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+// ========== NAVIGATION ==========
+document.querySelectorAll('.sidebar-nav-item').forEach(function(item) {
+  item.addEventListener('click', function(e) { e.preventDefault(); navigateTo(item.dataset.section); });
+});
+document.querySelectorAll('.mobile-tab').forEach(function(tab) {
+  tab.addEventListener('click', function() { navigateTo(tab.dataset.section); });
+});
+
+// Quick action buttons
+document.getElementById('qa-collection-ms01').addEventListener('click', function() { navigateTo('collection'); });
+document.getElementById('qa-pattern-ms01').addEventListener('click', function() { navigateTo('pattern'); });
+document.getElementById('qa-etsy-ms01').addEventListener('click', function() { navigateTo('etsy'); });
+document.getElementById('refresh-inspo-ms01').addEventListener('click', renderTodaysInspo);
+
+// ========== INIT ==========
+reinitIcons();
+updateSavedBadge();
+loadAllData();
+
+setTimeout(function() { reinitIcons(); }, 500);
+</script>
+</body>
+</html>
